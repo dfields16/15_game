@@ -13,12 +13,12 @@ https://confluence.atlassian.com/bitbucketserver/basic-git-commands-776639767.ht
 
 Frequently used git commands:
 -Clone a repository
-	git clone (some repository name here, ours is git@bitbucket.org:csceteam18/15game.git)
+git clone (some repository name here, ours is git@bitbucket.org:csceteam18/15game.git)
 -Add file to repository
-	git add filename
+git add filename
 -Commit changes to repository
-	git commit -m "message to commit"
+git commit -m "message to commit"
 -Push changes to repository
-	git push origin master
+git push origin master
 -Pull changes from repository
-	git pull
+git pull
