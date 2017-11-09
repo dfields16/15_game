@@ -1,5 +1,5 @@
 #Our 15 Game for CSCE 121
-Names: Dawson Fields, Beringer Ergo, 
+Names: Dawson Fields, Beringer Ergo, Michael Goh
 
 ###How to install git on Windows:
 + [Bitbucket's Tutorial](https://www.atlassian.com/git/tutorials/install-git#windows)
