@@ -2,8 +2,8 @@
 Names: Dawson Fields, Beringer Ergo, 
 
 ###How to install git on Windows:
-[Bitbucket's Tutorial](https://www.atlassian.com/git/tutorials/install-git#windows)
-[Youtube](https://www.youtube.com/watch?v=albr1o7Z1nw)
++ [Bitbucket's Tutorial](https://www.atlassian.com/git/tutorials/install-git#windows)
++ [Youtube](https://www.youtube.com/watch?v=albr1o7Z1nw)
 
 ###How to add an SSH Key to bitbucket:
 [SSH KEY Tutorial](https://confluence.atlassian.com/bitbucket/set-up-an-ssh-key-728138079.html)
