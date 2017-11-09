@@ -6,10 +6,10 @@ Names: Dawson Fields, Beringer Ergo,
 + [Youtube](https://www.youtube.com/watch?v=albr1o7Z1nw)
 
 ###How to add an SSH Key to bitbucket:
-[SSH KEY Tutorial](https://confluence.atlassian.com/bitbucket/set-up-an-ssh-key-728138079.html)
++ [SSH KEY Tutorial](https://confluence.atlassian.com/bitbucket/set-up-an-ssh-key-728138079.html)
 
 ###Basic Git Commands:
-[Commands](https://confluence.atlassian.com/bitbucketserver/basic-git-commands-776639767.html)
++ [Commands](https://confluence.atlassian.com/bitbucketserver/basic-git-commands-776639767.html)
 
 ###Frequently used git commands:
 + Clone a repository
