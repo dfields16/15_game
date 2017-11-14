@@ -1,17 +1,20 @@
 #include <iostream>
 #include <sstream>
-#include "Graph.h"
-#include "GUI.h"
-#include "Window.h"
 #include "std_lib_facilities_5.h"
-#include "Simple_window.h"
 #include "FL/Fl_JPEG_Image.H"
-#include "Tile.h"
+#include "GameWindow.h"
+#include "SplashScreen.h"
 using namespace Graph_lib;
 using namespace std;
-//using namespace Board;
 int main(){
-  Vector_ref<Tile>btns;
+  //GameWindow gw(Point(100,100), 200, 250, "15Game");
+  Puzzle_game win(Point(0,0),500,500,"puzzle game");
+  return gui_main();
+}
+
+/*
+
+Vector_ref<Tile>btns;
   vector<int> index;
   int numColsRows = 4;
   int width = 50;
@@ -29,6 +32,5 @@ int main(){
 
   window.wait_for_button();
   return 0;
-}
 
-
+*/

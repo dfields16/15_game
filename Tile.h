@@ -10,7 +10,7 @@ namespace Graph_lib{
 			
 			static void cb_OnClick(Address, Address);
 			void OnClick();
-			Tile(Point xy, int w, int h, const string& label,int id, Point loc)
+			Tile(Point xy, int w, int h, const string& label, int id, Point loc)
 				: Widget(xy,w,h,label,cb_OnClick),
 				tileID(id), location(loc)
 			{}
