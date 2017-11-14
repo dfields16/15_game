@@ -1,6 +1,7 @@
 #include "GUI.h"
 #include "Window.h"
 #include "Point.h"
+#include <FL/fl_draw.H>
 //Added to namespace Graph_lib
 namespace Graph_lib{
 	struct Tile : Widget{
@@ -16,6 +17,8 @@ namespace Graph_lib{
 			{}
 			
 			void attach(Window&);
+			
+			void setColor(Fl_Color c);
 	};
 
 }

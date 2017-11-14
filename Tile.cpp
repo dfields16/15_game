@@ -13,7 +13,7 @@ namespace Graph_lib{
 	void Tile::OnClick(){
 	   cout << "Index: " << tileID << endl;
 	   cout << "Location: (" << location.x << ", " << location.y << ")" << endl;
-	   //call some function send tile as input
+	   setColor(Color::red);
 	   //Change Color: pw->color(Color::red);
 	} 
 	//Attach Tile
@@ -21,5 +21,9 @@ namespace Graph_lib{
 		pw = new Fl_Button(loc.x, loc.y, width, height, label.c_str());
 		pw->callback(reinterpret_cast<Fl_Callback*>(do_it), this); // pass the Tile Object
 		own = &win;
+	}
+	//SetColor
+	void Tile::setColor(Fl_Color c){
+		pw->color(c);
 	}
 }
