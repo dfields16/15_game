@@ -19,7 +19,7 @@ int main(){
   Simple_window window(Point(100,200),width*numColsRows,width*numColsRows,"Test");
   for   (int y = 0; y < numColsRows; ++y){
     for (int x = 0; x < numColsRows; ++x){
-      btns.push_back(new Tile(Point(x*width, y*width) , width, width, to_string(btns.size()+1), btns.size()+1));
+      btns.push_back(new Tile(Point(x*width, y*width) , width, width, to_string(btns.size()+1), btns.size()+1, Point(x,y)));
       index.push_back(k++);
     }
   }
