@@ -7,8 +7,8 @@
 using namespace Graph_lib;
 using namespace std;
 int main(){
-  //GameWindow gw(Point(100,100), 200, 250, "15Game");
-  Puzzle_game win(Point(0,0),500,500,"puzzle game");
+  GameWindow gw(Point(100,100), 200, 250, "15Game");
+  //Puzzle_game win(Point(0,0),500,500,"puzzle game");
   return gui_main();
 }
 

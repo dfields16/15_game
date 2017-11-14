@@ -1,6 +1,7 @@
 #include <FL/Fl.H>
 #include <FL/Fl_Button.H>
 #include "Tile.h"
+#include "Graph.h"
 using namespace std;
 
 namespace Graph_lib{
@@ -12,6 +13,8 @@ namespace Graph_lib{
 	void Tile::OnClick(){
 	   cout << "Index: " << tileID << endl;
 	   cout << "Location: (" << location.x << ", " << location.y << ")" << endl;
+	   //call some function send tile as input
+	   //Change Color: pw->color(Color::red);
 	} 
 	//Attach Tile
 	void Tile::attach(Window& win){
