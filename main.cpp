@@ -9,7 +9,7 @@
 #include "Tile.h"
 using namespace Graph_lib;
 using namespace std;
-using namespace Board;
+//using namespace Board;
 int main(){
   Vector_ref<Tile>btns;
   vector<int> index;
