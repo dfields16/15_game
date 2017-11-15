@@ -17,7 +17,7 @@ Names: Dawson Fields, Beringer Ergo, MICHAEL GOH
 + Add file to repository
 	* git add filename
 + Commit changes to repository
-	* git commit -m "message to commit"
+	* git commit -a -m "message to commit"
 + Push changes to repository
 	* git push origin master
 + Pull changes from repository
