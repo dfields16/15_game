@@ -20,6 +20,7 @@ GameWindow::GameWindow(Point xy, int w, int h, const string& title)
 	for (int i = 0; i<btns.size(); ++i){
 		attach(btns[i]);
 	}
+	hide();
 }
 
 void GameWindow::cb_quit(Address, Address pw){  
@@ -28,3 +29,21 @@ void GameWindow::cb_quit(Address, Address pw){
 void GameWindow::quit(){
    hide();
 }
+
+void GameWindow::showGameWindow(){
+	show();
+}
+
+/*int GameWindow::getCurrentPattern()[][4]{
+	int ptrn[4][4] = new int[4][4];
+	for(int i = 0; i < btns.size(); ++i){
+		ptrn[i/4][i%4] = btns[i].tileID;
+	}
+	return ptrn;
+}*/
+
+
+
+
+
+

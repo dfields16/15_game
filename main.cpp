@@ -2,17 +2,14 @@
 #include <sstream>
 #include "std_lib_facilities_5.h"
 #include "FL/Fl_JPEG_Image.H"
-#include "GameWindow.h"
 #include "SplashScreen.h"
 #include "GameManager.h"
 using namespace Graph_lib;
 using namespace std;
 int main(){
-  GameWindow gw(Point(100,100), 200, 250, "15Game");
-  //Puzzle_game win(Point(0,0),500,500,"puzzle game");
   GameManager gm(GameManager::Difficulty::Beginner);
   gm.checkWinState(true);
-  
+  gm.gameWin.showGameWindow();
   return gui_main();
 }
 

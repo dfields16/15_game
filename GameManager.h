@@ -1,4 +1,4 @@
-
+#include "GameWindow.h"
 
 struct GameManager{
 	private:
@@ -14,6 +14,8 @@ struct GameManager{
 		Difficulty difficulty;
 		int gamePtrn[4][4];
 		GameManager(Difficulty d);
-		
+		GameWindow gameWin;
 		bool checkWinState(bool shouldLog);
+		
+		
 };
