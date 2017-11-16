@@ -34,13 +34,13 @@ void GameWindow::showGameWindow(){
 	show();
 }
 
-/*int GameWindow::getCurrentPattern()[][4]{
-	int ptrn[4][4] = new int[4][4];
+vector<vector<int>> GameWindow::getCurrentPattern(){
+	vector<vector<int>> ptrn(4, vector<int>(4));
 	for(int i = 0; i < btns.size(); ++i){
 		ptrn[i/4][i%4] = btns[i].tileID;
 	}
 	return ptrn;
-}*/
+}
 
 
 

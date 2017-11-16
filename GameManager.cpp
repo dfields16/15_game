@@ -9,16 +9,16 @@ GameManager::GameManager(Difficulty d):
 	{
 		switch(difficulty){
 			case Beginner:
-				memcpy(gamePtrn, BPTRN, sizeof(CPTRN));
+				gamePtrn = BPTRN;
 			break;
 			case Intermediate:
-				memcpy(gamePtrn, IPTRN, sizeof(CPTRN));
+				gamePtrn = IPTRN;
 			break;
 			case Advanced:
-				memcpy(gamePtrn, APTRN, sizeof(CPTRN));
+				gamePtrn = APTRN;
 			break;
 			case Expert:
-				memcpy(gamePtrn, EPTRN, sizeof(CPTRN));
+				gamePtrn = EPTRN;
 			break;
 		}
 	}
@@ -26,6 +26,7 @@ GameManager::GameManager(Difficulty d):
 bool GameManager::checkWinState(bool shouldLog){
 	bool isCompleted = false;
 	//memcpy(gamePtrn, gameWin.getCurrentPattern(), sizeof(CPTRN));
+	gamePtrn = gameWin.getCurrentPattern();
 	for(int x = 0; x < 4; ++x){
 		for(int y = 0; y < 4; ++y){
 			if(gamePtrn[x][y] == CPTRN[x][y])isCompleted = true;

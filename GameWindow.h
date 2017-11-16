@@ -19,6 +19,6 @@ private:
    void quit();
 public:
 	void showGameWindow();
-	//int getCurrentPattern()[][4];
+	vector<vector<int>> getCurrentPattern();
 };
 
