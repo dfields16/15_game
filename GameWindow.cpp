@@ -9,9 +9,11 @@ using namespace std;
 
 GameWindow::GameWindow(Point xy, int w, int h, const string& title)
    :Window{xy,w,h,title},
-	quit_button(Point{0,y_max()-btnW}, x_max(), btnH, "Quit", cb_quit)
+	quitBtn(Point{x_max()/2,y_max()-btnW}, x_max()/2, btnH, "Quit", cb_quit),
+	hintBtn(Point{0,y_max()-btnW}, x_max()/2, btnH, "Hint", cb_hint)
 	{
-	attach(quit_button);
+	attach(quitBtn);
+	attach(hintBtn);
 	for   (int y = 0; y < 4; ++y){
 		for (int x = 0; x < 4; ++x){
 			btns.push_back(new Tile(Point(x*btnW, y*btnH) , btnW, btnH, to_string(btns.size()+1), btns.size()+1, Point(x,y)));
@@ -29,6 +31,14 @@ void GameWindow::cb_quit(Address, Address pw){
 void GameWindow::quit(){
    hide();
 }
+
+void GameWindow::cb_hint(Address, Address pw){  
+   reference_to<GameWindow>(pw).hint();
+} 
+void GameWindow::hint(){
+   cout << "Hint" << endl;
+}
+
 
 void GameWindow::showGameWindow(){
 	show();

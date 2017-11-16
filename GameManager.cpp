@@ -34,6 +34,7 @@ bool GameManager::checkWinState(bool shouldLog){
 		}
 		if(shouldLog)cout << endl;
 	}
+	if(shouldLog && isCompleted)cout << "You win!" << endl;
 	return isCompleted;
 }
 

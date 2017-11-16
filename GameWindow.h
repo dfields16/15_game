@@ -14,9 +14,14 @@ private:
    int btnH = 50;
    int btnSpacing = 0;
    Vector_ref<Tile> btns;
-   Button quit_button;
+   //quit btn
+   Button quitBtn;
    static void cb_quit(Address, Address);
    void quit();
+   //hint btn
+   Button hintBtn;
+   static void cb_hint(Address, Address);
+   void hint();
 public:
 	void showGameWindow();
 	vector<vector<int>> getCurrentPattern();
