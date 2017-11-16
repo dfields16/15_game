@@ -5,7 +5,8 @@
 using namespace std;
 GameManager::GameManager(Difficulty d):
 	difficulty(d),
-	gameWin(Point(0,0), 200, 250, "15Game")
+	gamePtrn(BPTRN),
+	gameWin(Point(0,0), 200, 250, "15Game", gamePtrn)
 	{
 		switch(difficulty){
 			case Beginner:

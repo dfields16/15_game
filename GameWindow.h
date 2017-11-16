@@ -7,7 +7,7 @@
 using namespace Graph_lib;
 using namespace std;
 struct GameWindow : Graph_lib::Window {
-   GameWindow(Point xy, int w, int h, const string& title);
+   GameWindow(Point xy, int w, int h, const string& title, vector<vector<int>>);
 private:
 //Button Stuff
    int btnW = 50;

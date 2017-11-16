@@ -7,7 +7,7 @@
 using namespace Graph_lib;
 using namespace std;
 
-GameWindow::GameWindow(Point xy, int w, int h, const string& title)
+GameWindow::GameWindow(Point xy, int w, int h, const string& title, vector<vector<int>> pattern)
    :Window{xy,w,h,title},
 	quitBtn(Point{x_max()/2,y_max()-btnW}, x_max()/2, btnH, "Quit", cb_quit),
 	hintBtn(Point{0,y_max()-btnW}, x_max()/2, btnH, "Hint", cb_hint)
@@ -16,7 +16,7 @@ GameWindow::GameWindow(Point xy, int w, int h, const string& title)
 	attach(hintBtn);
 	for   (int y = 0; y < 4; ++y){
 		for (int x = 0; x < 4; ++x){
-			btns.push_back(new Tile(Point(x*btnW, y*btnH) , btnW, btnH, to_string(btns.size()+1), btns.size()+1, Point(x,y)));
+			btns.push_back(new Tile(Point(x*btnW, y*btnH) , btnW, btnH, to_string(pattern[x][y]), pattern[x][y], Point(x,y)));
 		}
 	}
 	for (int i = 0; i<btns.size(); ++i){
