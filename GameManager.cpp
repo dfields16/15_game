@@ -24,18 +24,20 @@ GameManager::GameManager(Difficulty d):
 		}
 	}
 	
-bool GameManager::checkWinState(bool shouldLog){
+bool GameManager::checkWinState(bool shouldLog = false){
 	bool isCompleted = false;
 	//memcpy(gamePtrn, gameWin.getCurrentPattern(), sizeof(CPTRN));
 	gamePtrn = gameWin.getCurrentPattern();
 	for(int x = 0; x < 4; ++x){
 		for(int y = 0; y < 4; ++y){
 			if(gamePtrn[x][y] == CPTRN[x][y])isCompleted = true;
+			else isCompleted = false;
 			if(shouldLog)cout << gamePtrn[x][y] << " ";
 		}
 		if(shouldLog)cout << endl;
 	}
 	if(shouldLog && isCompleted)cout << "You win!" << endl;
+	else if(shouldLog)cout << "You're almost there!" << endl;
 	return isCompleted;
 }
 
