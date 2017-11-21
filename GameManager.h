@@ -17,5 +17,4 @@ struct GameManager{
 		GameWindow gameWin;
 		bool checkWinState(bool shouldLog);
 		
-		
 };

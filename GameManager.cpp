@@ -6,7 +6,7 @@ using namespace std;
 GameManager::GameManager(Difficulty d):
 	difficulty(d),
 	gamePtrn(BPTRN),
-	gameWin(Point(0,0), 200, 250, "15Game", gamePtrn)
+	gameWin(Point(0,0), 200, 250, "15Game")
 	{
 		switch(difficulty){
 			case Beginner:
@@ -22,16 +22,22 @@ GameManager::GameManager(Difficulty d):
 				gamePtrn = EPTRN;
 			break;
 		}
+		gameWin.createButtons(gamePtrn);
 	}
 	
 bool GameManager::checkWinState(bool shouldLog = false){
 	bool isCompleted = false;
-	//memcpy(gamePtrn, gameWin.getCurrentPattern(), sizeof(CPTRN));
+	//Get current game board
 	gamePtrn = gameWin.getCurrentPattern();
-	for(int x = 0; x < 4; ++x){
-		for(int y = 0; y < 4; ++y){
+	for(int y = 0; y < 4; ++y){
+		for(int x = 0; x < 4; ++x){
+			//Checks to see if game pattern == completed pattern
 			if(gamePtrn[x][y] == CPTRN[x][y])isCompleted = true;
 			else isCompleted = false;
+			//If Tiles are in the right spot, they are colored green
+			if(CPTRN[x][y] == gameWin.btns[x][y].tileID)gameWin.btns[x][y].setColor(Color::green);
+			else gameWin.btns[x][y].setColor(Color::red);
+			//Logs the current board to terminal
 			if(shouldLog)cout << gamePtrn[x][y] << " ";
 		}
 		if(shouldLog)cout << endl;
@@ -40,7 +46,6 @@ bool GameManager::checkWinState(bool shouldLog = false){
 	else if(shouldLog)cout << "You're almost there!" << endl;
 	return isCompleted;
 }
-
 
 
 

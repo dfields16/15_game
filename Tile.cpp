@@ -13,8 +13,7 @@ namespace Graph_lib{
 	void Tile::OnClick(){
 	   cout << "Index: " << tileID << endl;
 	   cout << "Location: (" << location.x << ", " << location.y << ")" << endl;
-	   setColor(Color::red);
-	   //Change Color: pw->color(Color::red);
+	   
 	} 
 	//Attach Tile
 	void Tile::attach(Window& win){
