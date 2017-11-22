@@ -21,10 +21,15 @@ private:
    Button hintBtn;
    static void cb_hint(Address, Address);
    void hint();
+   void updateTiles();
+   void checkAdjacentTiles(int x, int y);
+   void swapTiles(Point t1, Point t2);
 public:
 	void showGameWindow();
 	void createButtons(vector<vector<int>> pattern);
 	vector<vector<int>> getCurrentPattern();
 	vector<Vector_ref<Tile>> btns{{Vector_ref<Tile>()},{Vector_ref<Tile>()},{Vector_ref<Tile>()},{Vector_ref<Tile>()}};
+    Point findTile(Point loc);
+	Point findTile(int id);
 };
 

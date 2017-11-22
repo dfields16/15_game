@@ -5,7 +5,7 @@
 
 struct SplashScreen:Graph_lib::Window
 {
-	SplashScreen(Point xy, int w, int h, const string& title);
+	SplashScreen(Point xy, const string& title);
 	bool wait_for_button();
 	Text game_title;
 	Text team_name;

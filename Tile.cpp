@@ -11,9 +11,9 @@ namespace Graph_lib{
 	} 
 	//Callback Function
 	void Tile::OnClick(){
-	   cout << "Index: " << tileID << endl;
-	   cout << "Location: (" << location.x << ", " << location.y << ")" << endl;
-	   
+	   //cout << "ID:   " << tileID << endl;
+	   //cout << "LOC: (" << location.x << ", " << location.y << ")" << endl;
+	   beenPressed = true;
 	} 
 	//Attach Tile
 	void Tile::attach(Window& win){
@@ -25,4 +25,6 @@ namespace Graph_lib{
 	void Tile::setColor(Fl_Color c){
 		pw->color(c);
 	}
+	
+	
 }

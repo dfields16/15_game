@@ -5,8 +5,8 @@ void SplashScreen::cb_start(Address, Address pw)
 	reference_to<SplashScreen>(pw).button_pushed = true;
 }
 
-SplashScreen::SplashScreen(Point xy, int w, int h, const string& title)
-	:Window(xy,w,h,title),
+SplashScreen::SplashScreen(Point xy, const string& title)
+	:Window(xy,500,450,title),
 	game_title {Point{10,70},"Puzzle Game!"},
 	team_name {Point{130,170}, "Team 18"},
 	teammates {Point{20,270}, "Elijah, Bear, Dawson, Michael"},
