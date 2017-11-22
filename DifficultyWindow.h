@@ -3,11 +3,12 @@
 #include "Graph.h"
 #include "GUI.h"
 #include "Window.h"
-
+#include "GameManager.h"
 using namespace Graph_lib;
 using namespace std;
 struct DifficultyWindow : Graph_lib::Window {
    DifficultyWindow(Point xy, int w, int h, const string& title);
+   static GameManager::Difficulty getDifficulty();
 private:
 //Button sizes and spacing
    int btnW = 100;
@@ -31,6 +32,7 @@ private:
    void intermediate();
    void advanced();
    void expert();
-   //bool isOn = false;
+   GameManager::Difficulty difficulty = GameManager::Difficulty::Beginner;
+   bool shouldWait = true;
 };
 
