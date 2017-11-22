@@ -14,10 +14,15 @@ int main(){
 	SplashScreen splash(Point(0,0), "15Game");
 	splash.wait_for_button();
 	GameManager gm(DifficultyWindow::getDifficulty());
-	gm.checkWinState(true);
+	gm.checkWinState(false);
 	gm.gameWin.showGameWindow();
 	while(Fl::wait()){
-		gm.checkWinState(true);
+		if(gm.checkWinState(false)){
+			//Scoreboard stuff and game win state
+			cout << "YOU WIN!!!!" << endl;
+			
+			break;
+		}
 		
 	}
 	

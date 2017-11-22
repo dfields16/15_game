@@ -29,19 +29,29 @@ bool GameManager::checkWinState(bool shouldLog = false){
 	bool isCompleted = false;
 	//Get current game board
 	gamePtrn = gameWin.getCurrentPattern();
-	for(int y = 0; y < 4; ++y){
-		for(int x = 0; x < 4; ++x){
-			//Checks to see if game pattern == completed pattern
-			if(gamePtrn[x][y] == CPTRN[x][y])isCompleted = true;
-			else isCompleted = false;
+	for   (int y = 0; y < 4; ++y){
+		for (int x = 0; x < 4; ++x){
 			//If Tiles are in the right spot, they are colored green
-			if(CPTRN[x][y] == gameWin.btns[x][y].tileID)gameWin.btns[x][y].setColor(Color::green);
-			else gameWin.btns[x][y].setColor(Color::red);
+			Point p = gameWin.findTile(CPTRN[x][y]);
+			if(Point(y,x) == gameWin.btns[p.y][p.x].location)isCompleted = true;
+			else {
+				isCompleted = false;
+				break;
+			}
+		}
+	}
+	
+	for   (int y = 0; y < 4; ++y){
+		for (int x = 0; x < 4; ++x){
+			//If Tiles are in the right spot, they are colored green
+			Point p = gameWin.findTile(CPTRN[x][y]);
+			if(Point(y,x) == gameWin.btns[p.y][p.x].location)gameWin.btns[p.y][p.x].setColor(Color::green);
+			else gameWin.btns[p.y][p.x].setColor(Color::red);
 			//Logs the current board to terminal
-			if(shouldLog)cout << gamePtrn[x][y] << " ";
+			if(shouldLog)cout << gamePtrn[y][x] << " ";
 		}
 		if(shouldLog)cout << endl;
-	}
+	}	
 	if(shouldLog && isCompleted)cout << "You win!" << endl;
 	else if(shouldLog)cout << "You're almost there!" << endl;
 	return isCompleted;

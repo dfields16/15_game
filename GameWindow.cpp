@@ -42,7 +42,8 @@ vector<vector<int>> GameWindow::getCurrentPattern(){
 	vector<vector<int>> ptrn(4, vector<int>(4));
 	for   (int y = 0; y < 4; ++y){
 		for (int x = 0; x < 4; ++x){
-			ptrn[y][x] = btns[btns[y][x].location.x][btns[y][x].location.y].tileID;
+			Point p = findTile(x+y*4);
+			ptrn[btns[p.y][p.x].location.x][btns[p.y][p.x].location.y] = btns[p.x][p.y].tileID;
 		}
 	}
 	
@@ -79,7 +80,7 @@ void GameWindow::checkAdjacentTiles(int x, int y){
 	cout << "Tile Pressed\t("  << btns[x][y].location.x << ", " << btns[x][y].location.y << "): " << btns[x][y].tileID << endl;
 	if((btns[x][y].location.x-1) >= 0){//Right exchange
 		Point p = findTile(Point(btns[x][y].location.x-1,btns[x][y].location.y));
-		cout << "Tile Right\t("  << btns[p.y][p.x].location.x << ", " << btns[p.y][p.x].location.y << "): " << btns[p.y][p.x].tileID << endl;
+		//cout << "Tile Right\t("  << btns[p.y][p.x].location.x << ", " << btns[p.y][p.x].location.y << "): " << btns[p.y][p.x].tileID << endl;
 		if(btns[p.y][p.x].tileID == 0){
 			swapTiles(Point(x,y), Point(p.y,p.x));
 			return;
@@ -87,7 +88,7 @@ void GameWindow::checkAdjacentTiles(int x, int y){
 	}
 	if((btns[x][y].location.x+1) <= 3){//Left exchange
 		Point p = findTile(Point(btns[x][y].location.x+1,btns[x][y].location.y));
-		cout << "Tile Left\t("  << btns[p.y][p.x].location.x << ", " << btns[p.y][p.x].location.y << "): " << btns[p.y][p.x].tileID << endl;
+		//cout << "Tile Left\t("  << btns[p.y][p.x].location.x << ", " << btns[p.y][p.x].location.y << "): " << btns[p.y][p.x].tileID << endl;
 		if(btns[p.y][p.x].tileID == 0){
 			swapTiles(Point(x,y), Point(p.y,p.x));
 			return;
@@ -95,7 +96,7 @@ void GameWindow::checkAdjacentTiles(int x, int y){
 	}
 	if((btns[x][y].location.y-1) >= 0){//Up exchange
 		Point p = findTile(Point(btns[x][y].location.x,btns[x][y].location.y-1));
-		cout << "Tile Up\t\t("  << btns[p.y][p.x].location.x << ", " << btns[p.y][p.x].location.y << "): " << btns[p.y][p.x].tileID << endl;
+		//cout << "Tile Up\t\t("  << btns[p.y][p.x].location.x << ", " << btns[p.y][p.x].location.y << "): " << btns[p.y][p.x].tileID << endl;
 		if(btns[p.y][p.x].tileID == 0){
 			swapTiles(Point(x,y), Point(p.y,p.x));
 			return;
@@ -103,7 +104,7 @@ void GameWindow::checkAdjacentTiles(int x, int y){
 	}
 	if((btns[x][y].location.y+1) <= 3){//Down exchange
 		Point p = findTile(Point(btns[x][y].location.x,btns[x][y].location.y+1));
-		cout << "Tile Down\t("  << btns[p.y][p.x].location.x << ", " << btns[p.y][p.x].location.y << "): " << btns[p.y][p.x].tileID << endl;
+		//cout << "Tile Down\t("  << btns[p.y][p.x].location.x << ", " << btns[p.y][p.x].location.y << "): " << btns[p.y][p.x].tileID << endl;
 		if(btns[p.y][p.x].tileID == 0){
 			swapTiles(Point(x,y), Point(p.y,p.x));
 			return;
@@ -126,7 +127,7 @@ void GameWindow::swapTiles(Point t1, Point t2){
 Point GameWindow::findTile(Point loc){
 	for   (int y = 0; y < 4; ++y){
 		for (int x = 0; x < 4; ++x){
-			if(btns[x][y].location == loc)return Point(x,y);
+			if(btns[x][y].location == loc)return Point(y,x);
 		}
 	}
 	return Point(-1,-1);
@@ -135,7 +136,7 @@ Point GameWindow::findTile(Point loc){
 Point GameWindow::findTile(int id){
 	for   (int y = 0; y < 4; ++y){
 		for (int x = 0; x < 4; ++x){
-			if(btns[x][y].tileID == id)return Point(x,y);
+			if(btns[x][y].tileID == id)return Point(y,x);
 		}
 	}
 	return Point(-1,-1);
