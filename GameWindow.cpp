@@ -54,8 +54,8 @@ void GameWindow::createButtons(vector<vector<int>> pattern){
 	for   (int y = 0; y < 4; ++y){
 		for (int x = 0; x < 4; ++x){
 			if(pattern[x][y] == 0)
-				 btns[y].push_back(new Tile(Point(x*btnW, y*btnH), btnW, btnH, "", pattern[x][y], Point(x,y)));
-			else btns[y].push_back(new Tile(Point(x*btnW, y*btnH), btnW, btnH, to_string(pattern[x][y]), pattern[x][y], Point(x,y)));
+				 btns[y].push_back(new Tile(Point(x*btnW, y*btnH), btnW, btnH, "", pattern[y][x], Point(x,y)));
+			else btns[y].push_back(new Tile(Point(x*btnW, y*btnH), btnW, btnH, to_string(pattern[y][x]), pattern[y][x], Point(x,y)));
 		}
 	}
 	for   (int y = 0; y < 4; ++y){
