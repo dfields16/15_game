@@ -9,8 +9,10 @@
 using namespace Graph_lib;
 using namespace std;
 int main(){
-  GameManager gm(DifficultyWindow::getDifficulty());
-  gm.checkWinState(false);
-  gm.gameWin.showGameWindow();
-  return gui_main();
+	SplashScreen splash(Point(0,0),500,450, "15Game");
+	splash.wait_for_button();
+	GameManager gm(DifficultyWindow::getDifficulty());
+	gm.checkWinState(false);
+	gm.gameWin.showGameWindow();
+	return gui_main();
 }

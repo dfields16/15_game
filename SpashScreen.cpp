@@ -1,18 +1,11 @@
 #include "SplashScreen.h"
-#include "DifficultyWindow.h"
-void Puzzle_game::start()
+
+void SplashScreen::cb_start(Address, Address pw)
 {
-	DifficultyWindow(Point(0,0), 100, 250, "Difficulty");
-	hide();
-	
+	reference_to<SplashScreen>(pw).button_pushed = true;
 }
 
-void Puzzle_game::cb_start(Address, Address pw)
-{
-	reference_to<Puzzle_game>(pw).start();
-}
-
-Puzzle_game::Puzzle_game(Point xy, int w, int h, const string& title)
+SplashScreen::SplashScreen(Point xy, int w, int h, const string& title)
 	:Window(xy,w,h,title),
 	game_title {Point{10,70},"Puzzle Game!"},
 	team_name {Point{130,170}, "Team 18"},
@@ -31,3 +24,10 @@ Puzzle_game::Puzzle_game(Point xy, int w, int h, const string& title)
 	attach(start_button);
 }
 
+bool SplashScreen::wait_for_button(){
+    show();
+    button_pushed = false;
+    while (!button_pushed) Fl::wait();
+	hide();
+    return button_pushed;
+}
