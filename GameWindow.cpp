@@ -30,8 +30,10 @@ void GameWindow::cb_hint(Address, Address pw){
 } 
 void GameWindow::hint(){
 	//TODO get numMoves left;
+	hide();
 	int numMoves = 99;
 	HintWindow::createWin(numMoves);
+	show();
 }
 
 

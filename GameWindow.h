@@ -3,7 +3,7 @@
 #include "Graph.h"
 #include "GUI.h"
 #include "Window.h"
-//#include "Tile.h"
+#include "Tile.h"
 #include "HintWindow.h"
 
 using namespace Graph_lib;

@@ -3,21 +3,19 @@
 #include "Graph.h"
 #include "GUI.h"
 #include "Window.h"
-#include "Tile.h"
 using namespace Graph_lib;
 using namespace std;
 struct HintWindow : Graph_lib::Window {
-   HintWindow(Point xy, int movesLeft);
-   static void createWin(int numMovesLeft);
+   HintWindow(Point xy, int w, int h, const string& title, int numMoves);
+   static void createWin(int numMoves);
 private:
-	string instuctions = "1) Press stuff etc";
-//Button Stuff
-	int btnH = 50;
-	//Close btn
-	Button closeBtn;
-	static void cb_close(Address, Address);
-	void close();
-public:
-	void showHintWindow();
+	bool shouldWait = true;
+//Close Btn
+   Button quit_button;
+   static void cb_quit(Address, Address);
+   void quit();
+//Hint stuff
+	int numMovesLeft;
+	
 };
 

@@ -7,30 +7,25 @@
 using namespace Graph_lib;
 using namespace std;
 
-HintWindow::HintWindow(Point xy, int movesLeft)
-   :Window(xy,250,100,"Hint"),
-	closeBtn(Point(0,y_max()-btnH), x_max(), btnH, "Close", cb_close)
-	{
-		attach(closeBtn);	
+HintWindow::HintWindow(Point xy, int w, int h, const string& title, int numMoves)
+   :Window(xy, w, h, title),
+	quit_button(Point{x_max()/2-x_max()/4,y_max()-35}, x_max()/2, 25, "Quit", cb_quit),
+	numMovesLeft(numMoves)
+   {
+	attach(quit_button);
+	
 	}
 
-void HintWindow::createWin(int numMovesLeft){
-	HintWindow win(Point(0,0), numMovesLeft);
-	win.show();
+void HintWindow::createWin(int numMoves){
+	HintWindow win(Point(0,0), 350, 200, "Hint", numMoves);
+	while(win.shouldWait)Fl::wait();
+	win.quit();
 }
-	
-void HintWindow::cb_close(Address, Address pw){  
-   reference_to<HintWindow>(pw).close();
+   
+   
+void HintWindow::cb_quit(Address, Address pw){  
+   reference_to<HintWindow>(pw).quit();
 } 
-void HintWindow::close(){
-   hide();
+void HintWindow::quit(){
+	shouldWait = false;
 }
-
-
-
-
-
-
-
-
-
