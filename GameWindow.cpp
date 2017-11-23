@@ -29,7 +29,9 @@ void GameWindow::cb_hint(Address, Address pw){
    reference_to<GameWindow>(pw).hint();
 } 
 void GameWindow::hint(){
-   cout << "Hint" << endl;
+	//TODO get numMoves left;
+	int numMoves = 99;
+	HintWindow::createWin(numMoves);
 }
 
 
