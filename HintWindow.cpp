@@ -18,7 +18,11 @@ HintWindow::HintWindow(Point xy, int w, int h, const string& title, int numMoves
 
 void HintWindow::createWin(int numMoves){
 	HintWindow win(Point(0,0), 350, 200, "Hint", numMoves);
-	while(win.shouldWait)Fl::wait();
+	while(win.shouldWait){
+		Text hintMessage {Point{100,50}, "This many moves left"};
+		win.attach(hintMessage);
+		Fl::wait();
+	}
 	win.quit();
 }
    
