@@ -16,5 +16,6 @@ struct GameManager{
 		GameManager(Difficulty d);
 		GameWindow gameWin;
 		bool checkWinState(bool shouldLog);
-		
+		int movesLeft = 0;
+		int maxMoves = 0;
 };

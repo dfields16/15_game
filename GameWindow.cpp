@@ -9,15 +9,25 @@ using namespace std;
 
 GameWindow::GameWindow(Point xy, int w, int h, const string& title)
    :Window{xy,w,h,title},
-	quitBtn(Point{x_max()/2,y_max()-btnW}, x_max()/2, btnH, "Quit", cb_quit),
-	hintBtn(Point{0,y_max()-btnW}, x_max()/2, btnH, "Hint", cb_hint)
+	quitBtn(Point{btnW*4,y_max()-btnW}, x_max()-btnW*4, btnH, "Quit", cb_quit),
+	hintBtn(Point{0,y_max()-btnW}, btnW*4, btnH, "Hint", cb_hint),
+	scoreBox(Point{0,0}, x_max(), 25, "Moves left: 99"),
+	instrBox(Point{btnW*4,25}, x_max()-btnW*4, btnH*4, "")
 	{
 	attach(quitBtn);
 	attach(hintBtn);
-	
+	attach(scoreBox);
+	attach(instrBox);
+	instrBox.put(instrStr);
 	hide();
 	}
 
+void GameWindow::setScore(int score, bool isFinal){
+	if(!isFinal)scoreBox.put("Moves left: " + to_string(score));
+	else 		scoreBox.put("Final Score: " + to_string(score));
+}
+
+	
 void GameWindow::cb_quit(Address, Address pw){  
    reference_to<GameWindow>(pw).quit();
 } 
@@ -58,8 +68,8 @@ void GameWindow::createButtons(vector<vector<int>> pattern){
 	for   (int y = 0; y < 4; ++y){
 		for (int x = 0; x < 4; ++x){
 			if(pattern[x][y] == 0)
-				 btns[y].push_back(new Tile(Point(x*btnW, y*btnH), btnW, btnH, "", pattern[y][x], Point(x,y)));
-			else btns[y].push_back(new Tile(Point(x*btnW, y*btnH), btnW, btnH, to_string(pattern[y][x]), pattern[y][x], Point(x,y)));
+				 btns[y].push_back(new Tile(Point(x*btnW, y*btnH+25), btnW, btnH, "", pattern[y][x], Point(x,y)));
+			else btns[y].push_back(new Tile(Point(x*btnW, y*btnH+25), btnW, btnH, to_string(pattern[y][x]), pattern[y][x], Point(x,y)));
 		}
 	}
 	for   (int y = 0; y < 4; ++y){
