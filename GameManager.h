@@ -16,6 +16,10 @@ struct GameManager{
 		GameManager(Difficulty d);
 		GameWindow gameWin;
 		bool checkWinState(bool shouldLog);
+<<<<<<< HEAD
 		int movesLeft = 0;
 		int maxMoves = 0;
+=======
+		int ManhattanDistance();
+>>>>>>> a0fc0537ef525226a751de67cef0daa8278217f0
 };
