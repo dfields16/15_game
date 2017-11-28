@@ -43,8 +43,8 @@ bool GameManager::checkWinState(){
 		showHint();
 	}
 	if(movesLeft == 0){
-		gameWin.setScore(numCorrect*maxMoves, true);
 		checkBoardState();
+		gameWin.setScore(numCorrect*maxMoves, true);
 		return true;
 	}else return checkBoardState();
 }
@@ -70,41 +70,27 @@ bool GameManager::checkBoardState(){
 
 int GameManager::findBestPath(){
 	vector<vector<int>> tmp = gameWin.getCurrentPattern();
-		cout << "CURRENT MATRIX" << endl;
-		printMatrix(tmp);
-	vector<int> swapID(4,-1);
-	vector<int> pathLength(4,-1);
+	vector<int> swapID(4,-1), pathLength(4,-1);
 	vector<vector<int>>upM, downM, leftM, rightM;
 	upM = createSwapMtrx	(tmp, dUp, &swapID[0]);		//UP
 	downM = createSwapMtrx  (tmp, dDown, &swapID[1]);	//DOWN
 	leftM = createSwapMtrx  (tmp, dLeft, &swapID[2]);	//LEFT
 	rightM = createSwapMtrx (tmp, dRight, &swapID[3]);	//RIGHT
-		cout << "UP MATRIX" << endl;
-		printMatrix(upM);
-		cout << "LEFT MATRIX" << endl;
-		printMatrix(leftM);
 	for(int i = (movesLeft==maxMoves)? 0:1; i < 16; ++i){
 		if(upM   != CPTRN && swapID[0] != prevID)pathLength[0] += manhattanDistance(i, upM);	//UP
 		if(downM != CPTRN && swapID[1] != prevID)pathLength[1] += manhattanDistance(i, downM);	//DOWN
 		if(leftM != CPTRN && swapID[2] != prevID)pathLength[2] += manhattanDistance(i, leftM);	//LEFT
 		if(rightM!= CPTRN && swapID[3] != prevID)pathLength[3] += manhattanDistance(i, rightM);//RIGHT
 		cout << "MDistance" << i << ": " << pathLength[0] << " " << pathLength[1] << " " << pathLength[2] << " " << pathLength[3] << " "<< endl;
-	}
-	int min = 10000;
+	}int min = 10000;
 	for(int i = 0; i < 4; ++i){if(pathLength[i] > 0)min = pathLength[i];break;}
 	int returnNum = swapID[0];
 	for(int i = 0; i < 4; ++i){
-		//cout << "Pathlength " << i << ":" << pathLength[i] << endl;
-		//cout << "Swap ID " << i << ":" << swapID[i] << endl;
 		if(min > pathLength[i] && pathLength[i] != -1){
 			min = pathLength[i];
 			returnNum = swapID[i];
-			//cout << "chosen: " << min << endl;
 		}	
-	}
-	//cout << "MinMoves: " << min << endl;
-	//cout << "Tile ID: " << returnNum << endl;
-	return returnNum;
+	}return returnNum;
 }
 
 vector<vector<int>> GameManager::createSwapMtrx(vector<vector<int>> pattern, Direction dir, int* id){
@@ -200,7 +186,7 @@ void GameManager::showHint(){
 	if(gameWin.showHint){
 		string hintStr = "You should press "
 		+ to_string(findBestPath())
-		+ "\nPress hint again to close this dialog.";
+		+ "\nPress hint or any tile to close this dialog.";
 		gameWin.setInstructionText(false, hintStr);
 	}else gameWin.setInstructionText(true, "");
 	
