@@ -11,13 +11,21 @@ GameWindow::GameWindow(Point xy, int w, int h, const string& title)
    :Window{xy,w,h,title},
 	quitBtn(Point{btnW*4,y_max()-btnW}, x_max()-btnW*4, btnH, "Quit", cb_quit),
 	hintBtn(Point{0,y_max()-btnW}, btnW*4, btnH, "Hint", cb_hint),
-	scoreBox(Point{0,0}, x_max(), 25, "Moves left: 99"),
+	scoreBox(Point{0,0}, btnW*4, 25, "Moves left: 99"),
+	initialBox(Point{btnW*4,0}, x_max()-btnW*4, 25, ""),
 	instrBox(Point{btnW*4,25}, x_max()-btnW*4, btnH*4, "")
 	{
 	attach(quitBtn);
 	attach(hintBtn);
 	attach(scoreBox);
 	attach(instrBox);
+	attach(initialBox);
+	instrStr = "Instructions:\n1) The goal is to arrange as many tiles in "
+	 "the correct order as possible within the allotted amount of moves\n" 
+	 "2) Click on a tile next to the blank one to swap its position\n"
+	 "3) If a tile is green, it is in the correct position. Otherwise"
+	 " it will be red and in the wrong position\n"
+	 "If you need help press the hint button!";
 	instrBox.put(instrStr);
 	hide();
 	}
@@ -37,18 +45,10 @@ void GameWindow::quit(){
 
 void GameWindow::cb_hint(Address, Address pw){  
    reference_to<GameWindow>(pw).hint();
-} 
-void GameWindow::hint(){
-	//TODO get numMoves left;
-	hide();
-	int numMoves = 99;
-	HintWindow::createWin(numMoves);
-	show();
 }
 
-
-void GameWindow::showGameWindow(){
-	show();
+void GameWindow::hint(){
+	showHint = !showHint;
 }
 
 vector<vector<int>> GameWindow::getCurrentPattern(){
@@ -57,7 +57,7 @@ vector<vector<int>> GameWindow::getCurrentPattern(){
 	for   (int y = 0; y < 4; ++y){
 		for (int x = 0; x < 4; ++x){
 			Point p = findTile(x+y*4);
-			ptrn[btns[p.y][p.x].location.x][btns[p.y][p.x].location.y] = btns[p.x][p.y].tileID;
+			ptrn[btns[p.y][p.x].location.y][btns[p.y][p.x].location.x] = btns[p.y][p.x].tileID;
 		}
 	}
 	
@@ -84,7 +84,8 @@ void GameWindow::updateTiles(){
 		for (int x = 0; x < 4; ++x){
 			if(btns[x][y].beenPressed){
 				btns[x][y].beenPressed = false;
-				checkAdjacentTiles(x,y);	
+				prevID = btns[x][y].tileID;
+				checkAdjacentTiles(x,y);
 			}
 		}
 	}
@@ -126,7 +127,6 @@ void GameWindow::checkAdjacentTiles(int x, int y){
 	}
 }
 
-
 void GameWindow::swapTiles(Point t1, Point t2){
 	//Swap Indices
 	Point p = btns[t1.x][t1.y].location;
@@ -156,7 +156,10 @@ Point GameWindow::findTile(int id){
 	return Point(-1,-1);
 }
 
-
+void GameWindow::setInstructionText(bool shouldReset, string txt = ""){
+	if(shouldReset)instrBox.put(instrStr);
+	else instrBox.put(txt);
+}
 
 
 

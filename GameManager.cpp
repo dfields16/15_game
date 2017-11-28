@@ -31,51 +31,183 @@ GameManager::GameManager(Difficulty d):
 		gameWin.setScore(movesLeft, false);
 	}
 	
-bool GameManager::checkWinState(bool shouldLog = false){
-	bool isCompleted = false;
-	int numCorrect = 0;
-	//Get current game board
-	if(gamePtrn != gameWin.getCurrentPattern()){
-		gamePtrn = gameWin.getCurrentPattern();
-		movesLeft -= 1;
-		cout << "Moves Left: " << movesLeft << endl;
-		gameWin.setScore(movesLeft, false);
+bool GameManager::checkWinState(){
+	vector<vector<int>> tmp = gameWin.getCurrentPattern();
+	if(gamePtrn != tmp){
+		gameWin.setScore(--movesLeft, false);
+		gamePtrn = tmp;
+		gameWin.setInstructionText(true, "");
+		gameWin.showHint = false;
+		printMatrix(gamePtrn);
+		prevID = gameWin.prevID;
+		showHint();
 	}
+	if(movesLeft == 0){
+		gameWin.setScore(numCorrect*maxMoves, true);
+		checkBoardState();
+		return true;
+	}else return checkBoardState();
+}
+
+bool GameManager::checkBoardState(){
+	bool isCompleted = true; 
+	numCorrect = 0;
 	for   (int y = 0; y < 4; ++y){
 		for (int x = 0; x < 4; ++x){
-			//If Tiles are in the right spot, they are colored green
-			Point p = gameWin.findTile(CPTRN[x][y]);
-			if(Point(y,x) == gameWin.btns[p.y][p.x].location)isCompleted = true;
-			else {
-				isCompleted = false;
-				break;
-			}
-		}
-	}
-	
-	for   (int y = 0; y < 4; ++y){
-		for (int x = 0; x < 4; ++x){
-			//If Tiles are in the right spot, they are colored green
 			Point p = gameWin.findTile(CPTRN[x][y]);
 			if(Point(y,x) == gameWin.btns[p.y][p.x].location){
+				if(isCompleted)isCompleted = true;
 				gameWin.btns[p.y][p.x].setColor(Color::green);
 				numCorrect += 1;
+			}else{
+				gameWin.btns[p.y][p.x].setColor(Color::red);
+				isCompleted = false;
 			}
-			else gameWin.btns[p.y][p.x].setColor(Color::red);
-			//Logs the current board to terminal
-			if(shouldLog)cout << gamePtrn[y][x] << " ";
 		}
-		if(shouldLog)cout << endl;
-	}	
-	if(shouldLog && isCompleted)cout << "You win!" << endl;
-	else if(shouldLog)cout << "You're almost there!" << endl;
-	if(movesLeft <= 0){
-			gameWin.setScore(numCorrect*maxMoves,true);
-			return true;
 	}
 	return isCompleted;
 }
 
+int GameManager::findBestPath(){
+	vector<vector<int>> tmp = gameWin.getCurrentPattern();
+		cout << "CURRENT MATRIX" << endl;
+		printMatrix(tmp);
+	vector<int> swapID(4,-1);
+	vector<int> pathLength(4,-1);
+	vector<vector<int>>upM, downM, leftM, rightM;
+	upM = createSwapMtrx	(tmp, dUp, &swapID[0]);		//UP
+	downM = createSwapMtrx  (tmp, dDown, &swapID[1]);	//DOWN
+	leftM = createSwapMtrx  (tmp, dLeft, &swapID[2]);	//LEFT
+	rightM = createSwapMtrx (tmp, dRight, &swapID[3]);	//RIGHT
+		cout << "UP MATRIX" << endl;
+		printMatrix(upM);
+		cout << "LEFT MATRIX" << endl;
+		printMatrix(leftM);
+	for(int i = (movesLeft==maxMoves)? 0:1; i < 16; ++i){
+		if(upM   != CPTRN && swapID[0] != prevID)pathLength[0] += manhattanDistance(i, upM);	//UP
+		if(downM != CPTRN && swapID[1] != prevID)pathLength[1] += manhattanDistance(i, downM);	//DOWN
+		if(leftM != CPTRN && swapID[2] != prevID)pathLength[2] += manhattanDistance(i, leftM);	//LEFT
+		if(rightM!= CPTRN && swapID[3] != prevID)pathLength[3] += manhattanDistance(i, rightM);//RIGHT
+		cout << "MDistance" << i << ": " << pathLength[0] << " " << pathLength[1] << " " << pathLength[2] << " " << pathLength[3] << " "<< endl;
+	}
+	int min = 10000;
+	for(int i = 0; i < 4; ++i){if(pathLength[i] > 0)min = pathLength[i];break;}
+	int returnNum = swapID[0];
+	for(int i = 0; i < 4; ++i){
+		//cout << "Pathlength " << i << ":" << pathLength[i] << endl;
+		//cout << "Swap ID " << i << ":" << swapID[i] << endl;
+		if(min > pathLength[i] && pathLength[i] != -1){
+			min = pathLength[i];
+			returnNum = swapID[i];
+			//cout << "chosen: " << min << endl;
+		}	
+	}
+	//cout << "MinMoves: " << min << endl;
+	//cout << "Tile ID: " << returnNum << endl;
+	return returnNum;
+}
+
+vector<vector<int>> GameManager::createSwapMtrx(vector<vector<int>> pattern, Direction dir, int* id){
+	vector<vector<int>> rMatrix = pattern;
+	Point pZero = findMatrixPos(0,  pattern);
+	switch(dir){
+			case dUp:
+				if(pZero.y-1 >= 0)rMatrix = swapIndices(pattern, pZero, Point(pZero.x,pZero.y-1), id);
+				else return CPTRN;
+			break;
+			case dDown:
+				if(pZero.y+1 <= 3)rMatrix = swapIndices(pattern, pZero, Point(pZero.x,pZero.y+1), id);
+				else return CPTRN;
+			break;
+			case dLeft:
+				if(pZero.x-1 >= 0)rMatrix = swapIndices(pattern, pZero, Point(pZero.x-1,pZero.y), id);
+				else return CPTRN;
+			break;
+			case dRight:
+				if(pZero.x+1 <= 3)rMatrix = swapIndices(pattern, pZero, Point(pZero.x+1,pZero.y), id);
+				else return CPTRN;
+			break;
+	}return rMatrix;
+}
+
+vector<vector<int>> GameManager::swapIndices(vector<vector<int>> pattern, Point p1, Point p2, int* id){
+	if(pattern[p1.y][p1.x] == 0) *id = pattern[p2.y][p2.x];
+	else if(pattern[p2.y][p2.x] == 0) *id = pattern[p1.y][p1.x];
+	int tmp = pattern[p1.y][p1.x];
+	pattern[p1.y][p1.x] = pattern[p2.y][p2.x];
+	pattern[p2.y][p2.x] = tmp;
+	return pattern;
+}
+
+void GameManager::printMatrix(vector<vector<int>> pattern){
+	cout << "Matrix: " << endl;
+	for(int y = 0; y < 4; y++){
+		for(int x = 0; x < 4; x++){
+			cout << pattern[y][x] << " ";
+		}
+		cout << endl;
+	}
+}
+
+int GameManager::manhattanDistance(int id, vector<vector<int>> pattern){
+	//Calculates manhattanDistance for id from pattern and CPTRN
+	Point p1 = findMatrixPos(id, pattern);
+	Point p2 = findMatrixPos(id, CPTRN);
+	return abs(p1.x-p2.x) + abs(p1.y-p2.y);
+}
+
+Point GameManager::findMatrixPos(int id, vector<vector<int>> pattern){
+	//Iterates over pattern looking for a point where id is located
+	for   (int y = 0; y < 4; ++y){
+		for (int x = 0; x < 4; ++x){
+			if(id == pattern[y][x]){
+				return Point(x,y);
+			}
+		}
+	}
+	//If no point is found, return -1,-1
+	return Point(-1,-1);
+}
+
+string GameManager::loadHighScores(){
+	//Based on difficulty, load separte file
+	return "";
+}
+
+void GameManager::saveHighScores(string score){
+	string loadedScores = loadHighScores();
+	cout << "Saving score: " << score << endl;
+	//split this into a vector based on '\n'
+	//add our current score to the string
+	//sort the vector by line score and insert new score appropriatly
+	//Each line should look like this '999 userInitials'
+	
+}
+
+void GameManager::showHighScores(){
+	string loadedScores = loadHighScores();
+	//add our current score to the string on a new line
+	gameWin.setInstructionText(false, loadedScores);
+}
+
+void GameManager::showGameWindow(){
+	gameWin.show();
+}
+
+void GameManager::showHint(){
+	if(gameWin.showHint == shouldShowHint)return;
+	shouldShowHint = gameWin.showHint;
+	if(gameWin.showHint){
+		string hintStr = "You should press "
+		+ to_string(findBestPath())
+		+ "\nPress hint again to close this dialog.";
+		gameWin.setInstructionText(false, hintStr);
+	}else gameWin.setInstructionText(true, "");
+	
+}
+
+
+/*
 //FIXME: link this function to the hint window;
 //FIXME: Figure out how to display the value that this function returns in the hint window;
 //FIXME: link this function to be able to pull the current gameboard pattern;
@@ -560,7 +692,7 @@ int GameManager::ManhattanDistance(){
 }
 
 
-
+*/
 
 
 

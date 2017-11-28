@@ -29,15 +29,19 @@ private:
    void swapTiles(Point t1, Point t2);
 //Score & Instruction items
 	Out_box scoreBox;
-	string instrStr = "Instructions:\n1) The goal is to arrange as many tiles in the correct order as possible within the allotted amount of moves\n2) Click on a tile next to the blank one to swap its position\n3) ";
+	In_box initialBox;
+	string instrStr;
 	MOut_box instrBox;
 public:
-	void showGameWindow();
 	void createButtons(vector<vector<int>> pattern);
 	void setScore(int score, bool isFinal);
 	vector<vector<int>> getCurrentPattern();
 	vector<Vector_ref<Tile>> btns{{Vector_ref<Tile>()},{Vector_ref<Tile>()},{Vector_ref<Tile>()},{Vector_ref<Tile>()}};
     Point findTile(Point loc);
 	Point findTile(int id);
+	bool showHint = false;
+	void setInstructionText(bool shouldReset, string txt);
+	int prevID = -1;
+
 };
 

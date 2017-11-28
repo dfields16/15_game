@@ -11,8 +11,8 @@ namespace Graph_lib{
 	} 
 	//Callback Function
 	void Tile::OnClick(){
-	   //cout << "ID:   " << tileID << endl;
-	   //cout << "LOC: (" << location.x << ", " << location.y << ")" << endl;
+	   cout << "ID:   " << tileID << endl;
+	   cout << "LOC: (" << location.x << ", " << location.y << ")" << endl;
 	   beenPressed = true;
 	} 
 	//Attach Tile
