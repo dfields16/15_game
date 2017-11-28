@@ -7,6 +7,7 @@
 using namespace Graph_lib;
 using namespace std;
 
+//Default constructor
 GameWindow::GameWindow(Point xy, int w, int h, const string& title)
    :Window{xy,w,h,title},
 	quitBtn(Point{btnW*4,y_max()-btnW}, x_max()-btnW*4, btnH, "Quit", cb_quit),
@@ -35,7 +36,7 @@ void GameWindow::setScore(int score, bool isFinal){
 	else 		scoreBox.put("Final Score: " + to_string(score));
 }
 
-	
+//Callbacks and their functions
 void GameWindow::cb_quit(Address, Address pw){  
    reference_to<GameWindow>(pw).quit();
 } 
@@ -52,10 +53,12 @@ void GameWindow::hint(){
 }
 
 vector<vector<int>> GameWindow::getCurrentPattern(){
+	//Updates tiles if nescessary
 	updateTiles();
 	vector<vector<int>> ptrn(4, vector<int>(4));
 	for   (int y = 0; y < 4; ++y){
 		for (int x = 0; x < 4; ++x){
+			//Creates a pattern from all tileID's of each tile
 			Point p = findTile(x+y*4);
 			ptrn[btns[p.y][p.x].location.y][btns[p.y][p.x].location.x] = btns[p.y][p.x].tileID;
 		}
@@ -65,6 +68,7 @@ vector<vector<int>> GameWindow::getCurrentPattern(){
 }
 
 void GameWindow::createButtons(vector<vector<int>> pattern){
+	//Creates buttons for the game board
 	for   (int y = 0; y < 4; ++y){
 		for (int x = 0; x < 4; ++x){
 			if(pattern[x][y] == 0)
@@ -72,6 +76,7 @@ void GameWindow::createButtons(vector<vector<int>> pattern){
 			else btns[y].push_back(new Tile(Point(x*btnW, y*btnH+25), btnW, btnH, to_string(pattern[y][x]), pattern[y][x], Point(x,y)));
 		}
 	}
+	//attaches tiles
 	for   (int y = 0; y < 4; ++y){
 		for (int x = 0; x < 4; ++x){
 			attach(btns[x][y]);
@@ -82,7 +87,10 @@ void GameWindow::createButtons(vector<vector<int>> pattern){
 void GameWindow::updateTiles(){
 	for   (int y = 0; y < 4; ++y){
 		for (int x = 0; x < 4; ++x){
+			//Checks to see if a tile has beenPressed
 			if(btns[x][y].beenPressed){
+				//If tile was pressed, it resets it and then checks adjacent tiles 
+				//and performs any nescessary actions
 				btns[x][y].beenPressed = false;
 				prevID = btns[x][y].tileID;
 				checkAdjacentTiles(x,y);
@@ -92,37 +100,27 @@ void GameWindow::updateTiles(){
 }
 
 void GameWindow::checkAdjacentTiles(int x, int y){
-	cout << "Tile Pressed\t("  << btns[x][y].location.x << ", " << btns[x][y].location.y << "): " << btns[x][y].tileID << endl;
-	if((btns[x][y].location.x-1) >= 0){//Right exchange
+	//Checks to see if point is valid
+	if((btns[x][y].location.x-1) >= 0){//Left exchange
+		//Finds Tile based on point and then swaps it if it's id=0
 		Point p = findTile(Point(btns[x][y].location.x-1,btns[x][y].location.y));
-		//cout << "Tile Right\t("  << btns[p.y][p.x].location.x << ", " << btns[p.y][p.x].location.y << "): " << btns[p.y][p.x].tileID << endl;
 		if(btns[p.y][p.x].tileID == 0){
-			swapTiles(Point(x,y), Point(p.y,p.x));
-			return;
+			swapTiles(Point(x,y), Point(p.y,p.x));return;
 		}
-	}
-	if((btns[x][y].location.x+1) <= 3){//Left exchange
+	}if((btns[x][y].location.x+1) <= 3){//Right exchange
 		Point p = findTile(Point(btns[x][y].location.x+1,btns[x][y].location.y));
-		//cout << "Tile Left\t("  << btns[p.y][p.x].location.x << ", " << btns[p.y][p.x].location.y << "): " << btns[p.y][p.x].tileID << endl;
 		if(btns[p.y][p.x].tileID == 0){
-			swapTiles(Point(x,y), Point(p.y,p.x));
-			return;
+			swapTiles(Point(x,y), Point(p.y,p.x));return;
 		}
-	}
-	if((btns[x][y].location.y-1) >= 0){//Up exchange
+	}if((btns[x][y].location.y-1) >= 0){//Up exchange
 		Point p = findTile(Point(btns[x][y].location.x,btns[x][y].location.y-1));
-		//cout << "Tile Up\t\t("  << btns[p.y][p.x].location.x << ", " << btns[p.y][p.x].location.y << "): " << btns[p.y][p.x].tileID << endl;
 		if(btns[p.y][p.x].tileID == 0){
-			swapTiles(Point(x,y), Point(p.y,p.x));
-			return;
+			swapTiles(Point(x,y), Point(p.y,p.x));return;
 		}
-	}
-	if((btns[x][y].location.y+1) <= 3){//Down exchange
+	}if((btns[x][y].location.y+1) <= 3){//Down exchange
 		Point p = findTile(Point(btns[x][y].location.x,btns[x][y].location.y+1));
-		//cout << "Tile Down\t("  << btns[p.y][p.x].location.x << ", " << btns[p.y][p.x].location.y << "): " << btns[p.y][p.x].tileID << endl;
 		if(btns[p.y][p.x].tileID == 0){
-			swapTiles(Point(x,y), Point(p.y,p.x));
-			return;
+			swapTiles(Point(x,y), Point(p.y,p.x));return;
 		}
 	}
 }
@@ -139,6 +137,7 @@ void GameWindow::swapTiles(Point t1, Point t2){
 }
 
 Point GameWindow::findTile(Point loc){
+	//Finds tile based on it's location
 	for   (int y = 0; y < 4; ++y){
 		for (int x = 0; x < 4; ++x){
 			if(btns[x][y].location == loc)return Point(y,x);
@@ -148,6 +147,7 @@ Point GameWindow::findTile(Point loc){
 }
 
 Point GameWindow::findTile(int id){
+	//Finds tile based on it's tileID
 	for   (int y = 0; y < 4; ++y){
 		for (int x = 0; x < 4; ++x){
 			if(btns[x][y].tileID == id)return Point(y,x);
@@ -156,7 +156,8 @@ Point GameWindow::findTile(int id){
 	return Point(-1,-1);
 }
 
-void GameWindow::setInstructionText(bool shouldReset, string txt = ""){
+void GameWindow::setInstructionText(bool shouldReset, string txt){
+	//Sets instrBox text to either instructions or some other string
 	if(shouldReset)instrBox.put(instrStr);
 	else instrBox.put(txt);
 }

@@ -13,7 +13,7 @@ DifficultyWindow::DifficultyWindow(Point xy, int w, int h, const string& title)
 	intermedBtn(Point{(x_max()-btnW)/2,2*(btnH+btnSpacing) }, btnW, btnH, "Intermediate",	cb_intermediate),
     advancedBtn(Point{(x_max()-btnW)/2,3*(btnH+btnSpacing) }, btnW, btnH, "Advanced",		cb_advanced),
     expertBtn  (Point{(x_max()-btnW)/2,4*(btnH+btnSpacing) }, btnW, btnH, "Expert", 		cb_expert),
-	quit_button(Point{x_max()-btnW,0}, btnW, btnH, "Quit", cb_quit)
+	quit_button(Point{0,y_max()-btnH}, x_max(), btnH, "Quit", cb_quit)
    {
 	attach(beginnerBtn);
 	attach(intermedBtn);
@@ -25,7 +25,8 @@ DifficultyWindow::DifficultyWindow(Point xy, int w, int h, const string& title)
 GameManager::Difficulty DifficultyWindow::getDifficulty(){
 	DifficultyWindow win(Point(0,0), 200, 250, "Difficulty");
 	while(win.shouldWait)Fl::wait();
-	win.quit();
+	win.hide();
+	win.shouldWait = false;
 	return win.difficulty;
 }
    
@@ -36,6 +37,7 @@ void DifficultyWindow::cb_quit(Address, Address pw){
 void DifficultyWindow::quit(){
    hide();
    shouldWait = false;
+   exit(0);
 }
 
 void DifficultyWindow::cb_beginner(Address, Address pw){  

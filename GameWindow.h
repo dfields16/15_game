@@ -40,7 +40,7 @@ public:
     Point findTile(Point loc);
 	Point findTile(int id);
 	bool showHint = false;
-	void setInstructionText(bool shouldReset, string txt);
+	void setInstructionText(bool shouldReset, string txt = "");
 	int prevID = -1;
 
 };

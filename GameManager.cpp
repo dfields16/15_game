@@ -36,7 +36,7 @@ bool GameManager::checkWinState(){
 	if(gamePtrn != tmp){
 		gameWin.setScore(--movesLeft, false);
 		gamePtrn = tmp;
-		gameWin.setInstructionText(true, "");
+		gameWin.setInstructionText(true);
 		gameWin.showHint = false;
 		printMatrix(gamePtrn);
 		prevID = gameWin.prevID;
@@ -188,7 +188,7 @@ void GameManager::showHint(){
 		+ to_string(findBestPath())
 		+ "\nPress hint or any tile to close this dialog.";
 		gameWin.setInstructionText(false, hintStr);
-	}else gameWin.setInstructionText(true, "");
+	}else gameWin.setInstructionText(true);
 	
 }
 

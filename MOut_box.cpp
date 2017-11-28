@@ -18,6 +18,7 @@ namespace Graph_lib{
 	}
 
 	void MOut_box::attach(Window& win){
+		//Attaches MOut_box to window
 		pw = new Fl_Text_Display(loc.x, loc.y, width, height, label.c_str());
 		reference_to<Fl_Text_Display>(pw).wrap_mode(1,0);
 		own = &win;
