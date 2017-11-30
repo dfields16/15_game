@@ -26,6 +26,7 @@ GameWindow::GameWindow(Point xy, int w, int h, const string& title)
 	 "2) Click on a tile next to the blank one to swap its position\n"
 	 "3) If a tile is green, it is in the correct position. Otherwise"
 	 " it will be red and in the wrong position\n"
+	 "4) Add your initials above to save your score\n"
 	 "If you need help press the hint button!";
 	instrBox.put(instrStr);
 	hide();

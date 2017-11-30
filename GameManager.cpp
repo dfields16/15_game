@@ -244,8 +244,7 @@ void GameManager::saveTxt(string txt){
 }
 
 void GameManager::showHighScores(){
-	
-	saveHighScores(to_string(numCorrect*maxMoves) + " " + gameWin.getInitialTxt());
+	if(gameWin.getInitialTxt() != "")saveHighScores(to_string(numCorrect*maxMoves) + " " + gameWin.getInitialTxt());
 	string loadedScores = loadHighScores();
 	//add our current score to the string on a new line
 	gameWin.setInstructionText(false, loadedScores);
