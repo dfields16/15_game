@@ -162,7 +162,9 @@ void GameWindow::setInstructionText(bool shouldReset, string txt){
 	else instrBox.put(txt);
 }
 
-
+string GameWindow::getInitialTxt(){
+	return initialBox.get_string();
+}
 
 
 

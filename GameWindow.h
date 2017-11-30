@@ -42,6 +42,6 @@ public:
 	bool showHint = false;
 	void setInstructionText(bool shouldReset, string txt = "");
 	int prevID = -1;
-
+	string getInitialTxt();
 };
 
