@@ -10,9 +10,11 @@ struct DifficultyWindow : Graph_lib::Window {
    DifficultyWindow(Point xy, int w, int h, const string& title);
    static GameManager::Difficulty getDifficulty();
 private:
+//Labels
+   Text header;
 //Button sizes and spacing
-   int btnW = 100;
-   int btnH = 25;
+   int btnW = 150;
+   int btnH = 35;
    int btnSpacing = 10;
 //Button Objects
    Button beginnerBtn;

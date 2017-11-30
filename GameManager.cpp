@@ -1,47 +1,53 @@
 #include "GameManager.h"
 #include <string.h>
 #include <iostream>
+#include <stdlib.h> 
 
 using namespace std;
 GameManager::GameManager(Difficulty d):
 	difficulty(d),
-	gamePtrn(BPTRN),
+	gamePtrn(BPTRN[0]),
 	gameWin(Point(0,0), 425, 275, "15Game")
 	{
+		int patternID = rand() % 4;
 		switch(difficulty){
 			case Beginner:
-				gamePtrn = BPTRN;
+				gamePtrn = BPTRN[patternID];
 				movesLeft = 10;
 			break;
 			case Intermediate:
-				gamePtrn = IPTRN;
+				gamePtrn = IPTRN[patternID];
 				movesLeft = 20;
 			break;
 			case Advanced:
-				gamePtrn = APTRN;
+				gamePtrn = APTRN[patternID];
 				movesLeft = 40;
 			break;
 			case Expert:
-				gamePtrn = EPTRN;
+				gamePtrn = EPTRN[patternID];
 				movesLeft = 80;
 			break;
 		}
 		maxMoves = movesLeft;
+		printMatrix(gamePtrn);
 		gameWin.createButtons(gamePtrn);
 		gameWin.setScore(movesLeft, false);
 	}
 	
 bool GameManager::checkWinState(){
+	//Check for board updates
 	vector<vector<int>> tmp = gameWin.getCurrentPattern();
 	if(gamePtrn != tmp){
+		//if change, subtract a move and update gamePtrn
 		gameWin.setScore(--movesLeft, false);
 		gamePtrn = tmp;
 		gameWin.setInstructionText(true);
 		gameWin.showHint = false;
-		printMatrix(gamePtrn);
 		prevID = gameWin.prevID;
 		showHint();
 	}
+	//If moves are < 0, Game Over
+	//Otherwise return checkBoardState
 	if(movesLeft == 0){
 		checkBoardState();
 		gameWin.setScore(numCorrect*maxMoves, true);
@@ -50,12 +56,15 @@ bool GameManager::checkWinState(){
 }
 
 bool GameManager::checkBoardState(){
+	//Updates the board's tiles making them green or red
 	bool isCompleted = true; 
 	numCorrect = 0;
+	//Counts the number correct and determines if the game is completed
 	for   (int y = 0; y < 4; ++y){
 		for (int x = 0; x < 4; ++x){
 			Point p = gameWin.findTile(CPTRN[x][y]);
 			if(Point(y,x) == gameWin.btns[p.y][p.x].location){
+				//if an incorrect tile is found, make it impossible to be completed
 				if(isCompleted)isCompleted = true;
 				gameWin.btns[p.y][p.x].setColor(Color::green);
 				numCorrect += 1;
@@ -69,22 +78,28 @@ bool GameManager::checkBoardState(){
 }
 
 int GameManager::findBestPath(){
-	vector<vector<int>> tmp = gameWin.getCurrentPattern();
+	gamePtrn = gameWin.getCurrentPattern();
+	//Create vectors and matrices to determine the best path
+	//each matrix upM downM... holds the swapped matrix
 	vector<int> swapID(4,-1), pathLength(4,-1);
 	vector<vector<int>>upM, downM, leftM, rightM;
-	upM = createSwapMtrx	(tmp, dUp, &swapID[0]);		//UP
-	downM = createSwapMtrx  (tmp, dDown, &swapID[1]);	//DOWN
-	leftM = createSwapMtrx  (tmp, dLeft, &swapID[2]);	//LEFT
-	rightM = createSwapMtrx (tmp, dRight, &swapID[3]);	//RIGHT
+	upM = createSwapMtrx	(gamePtrn, dUp, &swapID[0]);	//UP
+	downM = createSwapMtrx  (gamePtrn, dDown, &swapID[1]);	//DOWN
+	leftM = createSwapMtrx  (gamePtrn, dLeft, &swapID[2]);	//LEFT
+	rightM = createSwapMtrx (gamePtrn, dRight, &swapID[3]);	//RIGHT
+	//Compute pathLength by adding manhattanDistance for each possible path
 	for(int i = (movesLeft==maxMoves)? 0:1; i < 16; ++i){
 		if(upM   != CPTRN && swapID[0] != prevID)pathLength[0] += manhattanDistance(i, upM);	//UP
 		if(downM != CPTRN && swapID[1] != prevID)pathLength[1] += manhattanDistance(i, downM);	//DOWN
 		if(leftM != CPTRN && swapID[2] != prevID)pathLength[2] += manhattanDistance(i, leftM);	//LEFT
 		if(rightM!= CPTRN && swapID[3] != prevID)pathLength[3] += manhattanDistance(i, rightM);//RIGHT
-		cout << "MDistance" << i << ": " << pathLength[0] << " " << pathLength[1] << " " << pathLength[2] << " " << pathLength[3] << " "<< endl;
-	}int min = 10000;
+	}
+	int min = 10000;
+	//Set min to any possible value given; impossible values are <= 0
 	for(int i = 0; i < 4; ++i){if(pathLength[i] > 0)min = pathLength[i];break;}
 	int returnNum = swapID[0];
+	//Determine smallest pathLength and set returnNum to the smallest
+	//corresponding swapID value
 	for(int i = 0; i < 4; ++i){
 		if(min > pathLength[i] && pathLength[i] != -1){
 			min = pathLength[i];
@@ -96,6 +111,8 @@ int GameManager::findBestPath(){
 vector<vector<int>> GameManager::createSwapMtrx(vector<vector<int>> pattern, Direction dir, int* id){
 	vector<vector<int>> rMatrix = pattern;
 	Point pZero = findMatrixPos(0,  pattern);
+	//Depending on swap direction create a new matrix by swapping values if possible
+	//Otherwise, return CPTRN
 	switch(dir){
 			case dUp:
 				if(pZero.y-1 >= 0)rMatrix = swapIndices(pattern, pZero, Point(pZero.x,pZero.y-1), id);
@@ -117,8 +134,10 @@ vector<vector<int>> GameManager::createSwapMtrx(vector<vector<int>> pattern, Dir
 }
 
 vector<vector<int>> GameManager::swapIndices(vector<vector<int>> pattern, Point p1, Point p2, int* id){
+	//Sets *id to the non-zero value located at point p1 or p2
 	if(pattern[p1.y][p1.x] == 0) *id = pattern[p2.y][p2.x];
 	else if(pattern[p2.y][p2.x] == 0) *id = pattern[p1.y][p1.x];
+	//Swaps number position in matrix
 	int tmp = pattern[p1.y][p1.x];
 	pattern[p1.y][p1.x] = pattern[p2.y][p2.x];
 	pattern[p2.y][p2.x] = tmp;
@@ -126,6 +145,7 @@ vector<vector<int>> GameManager::swapIndices(vector<vector<int>> pattern, Point 
 }
 
 void GameManager::printMatrix(vector<vector<int>> pattern){
+	//Print a matrix
 	cout << "Matrix: " << endl;
 	for(int y = 0; y < 4; y++){
 		for(int x = 0; x < 4; x++){
@@ -157,16 +177,69 @@ Point GameManager::findMatrixPos(int id, vector<vector<int>> pattern){
 
 string GameManager::loadHighScores(){
 	//Based on difficulty, load separte file
-	return "";
+	string fileLoc = "";
+	switch(difficulty){
+			case Beginner:
+				fileLoc = "bScores.txt";
+			break;
+			case Intermediate:
+				fileLoc = "iScores.txt";
+			break;
+			case Advanced:
+				fileLoc = "aScores.txt";
+			break;
+			case Expert:
+				fileLoc = "eScores.txt";
+			break;
+	}
+	//Load text
+	string fContent = "";
+	
+	return fContent;
 }
 
 void GameManager::saveHighScores(string score){
-	string loadedScores = loadHighScores();
-	cout << "Saving score: " << score << endl;
-	//split this into a vector based on '\n'
 	//add our current score to the string
-	//sort the vector by line score and insert new score appropriatly
-	//Each line should look like this '999 userInitials'
+	string loadedScores = loadHighScores();
+	loadedScores += "\n" + score;
+	//split this into a vector based on '\n'
+	vector<string>scores;
+	string delimiter = "\n";
+	size_t pos = 0;
+	while ((pos = loadedScores.find(delimiter)) != string::npos) {
+		scores.push_back(loadedScores.substr(0, pos));
+		loadedScores.erase(0, pos + delimiter.length());
+	}
+	scores.push_back(loadedScores);
+	//Sort vector
+	sort (scores.begin(), scores.begin()); 
+	string outStr = "";
+	for(int i = 0; i < scores.size(); ++i){
+		outStr += scores[scores.size()-i];
+	}
+	//Save score
+	saveTxt(outStr);
+}
+
+void GameManager::saveTxt(string txt){
+	//Based on difficulty, save separte file
+	string fileLoc = "";
+	switch(difficulty){
+			case Beginner:
+				fileLoc = "bScores.txt";
+			break;
+			case Intermediate:
+				fileLoc = "iScores.txt";
+			break;
+			case Advanced:
+				fileLoc = "aScores.txt";
+			break;
+			case Expert:
+				fileLoc = "eScores.txt";
+			break;
+	}
+	//Save txt
+	
 	
 }
 
@@ -181,504 +254,18 @@ void GameManager::showGameWindow(){
 }
 
 void GameManager::showHint(){
+	//Checks to see if it should show hint based on GameWindow's showHint
 	if(gameWin.showHint == shouldShowHint)return;
 	shouldShowHint = gameWin.showHint;
+	//if true, shows hint with the string hintStr,
+	//Otherwise sets it to the default string
 	if(gameWin.showHint){
-		string hintStr = "You should press "
+		//C++ 11 feature 'auto'
+		auto hintStr = "You should press "
 		+ to_string(findBestPath())
 		+ "\nPress hint or any tile to close this dialog.";
 		gameWin.setInstructionText(false, hintStr);
 	}else gameWin.setInstructionText(true);
 	
 }
-
-
-/*
-//FIXME: link this function to the hint window;
-//FIXME: Figure out how to display the value that this function returns in the hint window;
-//FIXME: link this function to be able to pull the current gameboard pattern;
-int GameManager::ManhattanDistance(){
-	
-	//Gets the current board pattern and finds where the blank tile is.
-	gamePtrn = gameWin.getCurrentPattern();
-	Point p = gameWin.findTile(0);
-	
-	//The following if case is if the blank tile can be swapped with four different choices.
-	//All possible swaps are made and the sum of the remaining moves is calculated.
-	if ((p.x == 1 && p.y == 1) || (p.x == 1 && p.y == 2) || (p.x == 2 && p.y == 1) || (p.x == 2 && p.y == 2)){
-		
-		int ManhattanSumTop = 0;
-		int ManhattanSumRight = 0;
-		int ManhattanSumDown = 0;
-		int ManhattanSumLeft = 0;
-		
-		//Finds the sum after a top swap;
-		Point pTop = {p.y-1,p.x};
-		gameWin.swapTiles(p, pTop);
-		for   (int y = 0; y < 4; ++y){
-			for (int x = 0; x < 4; ++x){
-				Point z = gameWin.findTile(CPTRN[x][y]);
-				if(Point(y,x) != gameWin.btns[z.y][z.x].location){
-					ManhattanSumTop += (abs(y - z.y) + abs(x - z.x));
-				}
-			}
-		}
-		gameWin.swapTiles(pTop, p);
-		
-		
-		//Finds the sum after a right swap;
-		Point pRight = {p.y,p.x+1};
-		gameWin.swapTiles(p, pRight);
-		for   (int y = 0; y < 4; ++y){
-			for (int x = 0; x < 4; ++x){
-				Point z = gameWin.findTile(CPTRN[x][y]);
-				if(Point(y,x) != gameWin.btns[z.y][z.x].location){
-					ManhattanSumRight += abs(y - z.y) + abs(x - z.x);
-				}
-			}
-		}
-		gameWin.swapTiles(pRight, p);
-		
-		//Finds the sum after a bottom swap;
-		Point pDown = {p.y+1,p.x};
-		gameWin.swapTiles(p, pDown);
-		for   (int y = 0; y < 4; ++y){
-			for (int x = 0; x < 4; ++x){
-				Point z = gameWin.findTile(CPTRN[x][y]);
-				if(Point(y,x) != gameWin.btns[z.y][z.x].location){
-					ManhattanSumDown += abs(y - z.y) + abs(x - z.x);
-				}
-			}
-		}
-		gameWin.swapTiles(pDown, p);
-		
-		//Finds the sum after a left swap;
-		Point pLeft = {p.y,p.x-1};
-		gameWin.swapTiles(p, pLeft);
-		for   (int y = 0; y < 4; ++y){
-			for (int x = 0; x < 4; ++x){
-				Point z = gameWin.findTile(CPTRN[x][y]);
-				if(Point(y,x) != gameWin.btns[z.y][z.x].location){
-					ManhattanSumLeft += abs(y - z.y) + abs(x - z.x);
-				}
-			}
-		}
-		gameWin.swapTiles(pLeft, p);
-		
-		//Finds which sum is the least and returns the ID of the tile which belongs to the swap;
-		if ((ManhattanSumTop <= ManhattanSumDown) && (ManhattanSumTop <= ManhattanSumLeft) && (ManhattanSumTop <= ManhattanSumRight)){
-			return gameWin.btns[pTop.x][pTop.y].tileID;
-		}
-		
-		if ((ManhattanSumRight <= ManhattanSumDown) && (ManhattanSumRight <= ManhattanSumLeft) && (ManhattanSumRight <= ManhattanSumTop)){
-			return gameWin.btns[pRight.x][pRight.y].tileID;
-		}
-		
-		if ((ManhattanSumDown <= ManhattanSumLeft) && (ManhattanSumDown <= ManhattanSumTop) && (ManhattanSumDown <= ManhattanSumRight)){
-			return gameWin.btns[pDown.x][pDown.y].tileID;
-		}
-		
-		if ((ManhattanSumLeft <= ManhattanSumTop) && (ManhattanSumLeft <= ManhattanSumRight) && (ManhattanSumLeft <= ManhattanSumDown)){
-			return gameWin.btns[pLeft.x][pLeft.y].tileID;
-		}
-	
-	}
-	
-	//The following if case covers the cases where there are three different possible swaps;
-	if ((p.x == 1 && p.y == 0) || (p.x == 2 && p.y == 0) || (p.x == 0 && p.y == 1) || (p.x == 3 && p.y == 1) || (p.x == 0 && p.y == 2) || (p.x == 3 && p.y == 2) || (p.x == 1 && p.y == 3) || (p.x == 2 && p.y == 3)){
-		
-		//If the blank tile is in the top row;
-		if ((p.x == 1 && p.y == 0) || (p.x == 2 && p.y == 0)){
-			
-			int ManhattanSumRight = 0;
-			int ManhattanSumDown = 0;
-			int ManhattanSumLeft = 0;
-			
-			Point pRight = {p.y,p.x+1};
-			gameWin.swapTiles(p, pRight);
-			for   (int y = 0; y < 4; ++y){
-				for (int x = 0; x < 4; ++x){
-				Point z = gameWin.findTile(CPTRN[x][y]);
-					if(Point(y,x) != gameWin.btns[z.y][z.x].location){
-						ManhattanSumRight += abs(y - z.y) + abs(x - z.x);
-					}
-				}
-			}
-			gameWin.swapTiles(pRight, p);
-			
-			Point pDown = {p.y+1,p.x};
-			gameWin.swapTiles(p, pDown);
-			for   (int y = 0; y < 4; ++y){
-				for (int x = 0; x < 4; ++x){
-					Point z = gameWin.findTile(CPTRN[x][y]);
-					if(Point(y,x) != gameWin.btns[z.y][z.x].location){
-						ManhattanSumDown += abs(y - z.y) + abs(x - z.x);
-					}
-				}
-			}
-			gameWin.swapTiles(pDown, p);
-			
-			Point pLeft = {p.y,p.x-1};
-			gameWin.swapTiles(p, pLeft);
-			for   (int y = 0; y < 4; ++y){
-				for (int x = 0; x < 4; ++x){
-					Point z = gameWin.findTile(CPTRN[x][y]);
-					if(Point(y,x) != gameWin.btns[z.y][z.x].location){
-						ManhattanSumLeft += abs(y - z.y) + abs(x - z.x);
-					}
-				}
-			}
-			gameWin.swapTiles(pLeft, p);
-			
-			if ((ManhattanSumRight <= ManhattanSumDown) && (ManhattanSumRight <= ManhattanSumLeft)){
-				return gameWin.btns[pRight.x][pRight.y].tileID;
-			} 
-			
-			if ((ManhattanSumDown <= ManhattanSumRight) && (ManhattanSumDown <= ManhattanSumLeft)){
-				return gameWin.btns[pDown.x][pDown.y].tileID;
-			}
-			
-			if ((ManhattanSumLeft <= ManhattanSumRight) && (ManhattanSumLeft <= ManhattanSumDown)){
-				return gameWin.btns[pLeft.x][pLeft.y].tileID;
-			}
-		}
-		
-		//if the blank tile is in the right column;
-		if ((p.x == 3 && p.y == 2) || (p.x == 3 && p.y == 1)){
-			
-			int ManhattanSumTop = 0;
-			int ManhattanSumDown = 0;
-			int ManhattanSumLeft = 0;
-			
-			Point pTop = {p.y-1,p.x};
-			gameWin.swapTiles(p, pTop);
-			for   (int y = 0; y < 4; ++y){
-				for (int x = 0; x < 4; ++x){
-					Point z = gameWin.findTile(CPTRN[x][y]);
-					if(Point(y,x) != gameWin.btns[z.y][z.x].location){
-						ManhattanSumTop += (abs(y - z.y) + abs(x - z.x));
-					}
-				}
-			}
-			gameWin.swapTiles(pTop, p);
-			
-			Point pDown = {p.y+1,p.x};
-			gameWin.swapTiles(p, pDown);
-			for   (int y = 0; y < 4; ++y){
-				for (int x = 0; x < 4; ++x){
-					Point z = gameWin.findTile(CPTRN[x][y]);
-					if(Point(y,x) != gameWin.btns[z.y][z.x].location){
-						ManhattanSumDown += abs(y - z.y) + abs(x - z.x);
-					}
-				}
-			}
-			gameWin.swapTiles(pDown, p);
-			
-			Point pLeft = {p.y,p.x-1};
-			gameWin.swapTiles(p, pLeft);
-			for   (int y = 0; y < 4; ++y){
-				for (int x = 0; x < 4; ++x){
-					Point z = gameWin.findTile(CPTRN[x][y]);
-					if(Point(y,x) != gameWin.btns[z.y][z.x].location){
-						ManhattanSumLeft += abs(y - z.y) + abs(x - z.x);
-					}
-				}
-			}
-			gameWin.swapTiles(pLeft, p);
-			
-			if ((ManhattanSumTop <= ManhattanSumDown) && (ManhattanSumTop <= ManhattanSumLeft)){
-				return gameWin.btns[pTop.x][pTop.y].tileID;
-			}
-			
-			if ((ManhattanSumLeft <= ManhattanSumTop) && (ManhattanSumLeft <= ManhattanSumDown)){
-				return gameWin.btns[pLeft.x][pLeft.y].tileID;
-			}
-			
-			if ((ManhattanSumDown <= ManhattanSumLeft) && (ManhattanSumDown <= ManhattanSumTop)){
-				return gameWin.btns[pDown.x][pDown.y].tileID;
-			}
-		}
-		
-		//If the blank tile is in the bottom row;
-		if ((p.x == 1 && p.y == 3) || (p.x == 2 && p.y == 3)){
-		
-			int ManhattanSumTop = 0;
-			int ManhattanSumRight = 0;
-			int ManhattanSumLeft = 0;
-			
-			Point pTop = {p.y-1,p.x};
-			gameWin.swapTiles(p, pTop);
-			for   (int y = 0; y < 4; ++y){
-				for (int x = 0; x < 4; ++x){
-					Point z = gameWin.findTile(CPTRN[x][y]);
-					if(Point(y,x) != gameWin.btns[z.y][z.x].location){
-						ManhattanSumTop += (abs(y - z.y) + abs(x - z.x));
-					}
-				}
-			}
-			gameWin.swapTiles(pTop, p);
-			
-			Point pRight = {p.y,p.x+1};
-			gameWin.swapTiles(p, pRight);
-			for   (int y = 0; y < 4; ++y){
-				for (int x = 0; x < 4; ++x){
-				Point z = gameWin.findTile(CPTRN[x][y]);
-					if(Point(y,x) != gameWin.btns[z.y][z.x].location){
-						ManhattanSumRight += abs(y - z.y) + abs(x - z.x);
-					}
-				}
-			}
-			gameWin.swapTiles(pRight, p);
-			
-			Point pLeft = {p.y,p.x-1};
-			gameWin.swapTiles(p, pLeft);
-			for   (int y = 0; y < 4; ++y){
-				for (int x = 0; x < 4; ++x){
-					Point z = gameWin.findTile(CPTRN[x][y]);
-					if(Point(y,x) != gameWin.btns[z.y][z.x].location){
-						ManhattanSumLeft += abs(y - z.y) + abs(x - z.x);
-					}
-				}
-			}
-			gameWin.swapTiles(pLeft, p);
-		
-			if ((ManhattanSumTop <= ManhattanSumRight) && (ManhattanSumTop <= ManhattanSumLeft)){
-				return gameWin.btns[pTop.x][pTop.y].tileID;
-			}
-			
-			if ((ManhattanSumRight <= ManhattanSumTop) && (ManhattanSumRight <= ManhattanSumLeft)){
-				return gameWin.btns[pRight.x][pRight.y].tileID;
-			}
-
-			if ((ManhattanSumLeft <= ManhattanSumTop) && (ManhattanSumLeft <= ManhattanSumRight)){
-				return gameWin.btns[pLeft.x][pLeft.y].tileID;
-			}
-		}
-
-		//If the blank is in the leftmost column;
-		if ((p.x == 0 && p.y == 1) || (p.x == 0 && p.y == 2)){
-			
-			int ManhattanSumTop = 0;
-			int ManhattanSumRight = 0;
-			int ManhattanSumDown = 0;
-			
-			Point pTop = {p.y-1,p.x};
-			gameWin.swapTiles(p, pTop);
-			for   (int y = 0; y < 4; ++y){
-				for (int x = 0; x < 4; ++x){
-					Point z = gameWin.findTile(CPTRN[x][y]);
-					if(Point(y,x) != gameWin.btns[z.y][z.x].location){
-						ManhattanSumTop += (abs(y - z.y) + abs(x - z.x));
-					}
-				}
-			}
-			gameWin.swapTiles(pTop, p);
-			
-			Point pRight = {p.y,p.x+1};
-			gameWin.swapTiles(p, pRight);
-			for   (int y = 0; y < 4; ++y){
-				for (int x = 0; x < 4; ++x){
-				Point z = gameWin.findTile(CPTRN[x][y]);
-					if(Point(y,x) != gameWin.btns[z.y][z.x].location){
-						ManhattanSumRight += abs(y - z.y) + abs(x - z.x);
-					}
-				}
-			}
-			gameWin.swapTiles(pRight, p);
-			
-			Point pDown = {p.y+1,p.x};
-			gameWin.swapTiles(p, pDown);
-			for   (int y = 0; y < 4; ++y){
-				for (int x = 0; x < 4; ++x){
-					Point z = gameWin.findTile(CPTRN[x][y]);
-					if(Point(y,x) != gameWin.btns[z.y][z.x].location){
-						ManhattanSumDown += abs(y - z.y) + abs(x - z.x);
-					}
-				}
-			}
-			gameWin.swapTiles(pDown, p);
-			
-			if ((ManhattanSumTop <= ManhattanSumRight) && (ManhattanSumTop <= ManhattanSumDown)){
-				return gameWin.btns[pTop.x][pTop.y].tileID;
-			}
-			
-			if ((ManhattanSumRight <= ManhattanSumTop) && (ManhattanSumRight <= ManhattanSumDown)){
-				return gameWin.btns[pRight.x][pRight.y].tileID;
-			}
-			
-			if ((ManhattanSumDown <= ManhattanSumTop) && (ManhattanSumDown <= ManhattanSumRight)){
-				return gameWin.btns[pDown.x][pDown.y].tileID;
-			}
-			
-		}
-		
-	}
-	
-	//The following covers the case where there are two possible swaps;
-	if ((p.x == 0 && p.y == 0) || (p.x == 3 && p.y == 0) || (p.x == 0 && p.y == 3) || (p.x == 3 && p.y ==3)){
-		
-		//If the blank is in the top left corner;
-		if (p.x == 0 && p.y == 0){
-			
-			int ManhattanSumRight = 0;
-			int ManhattanSumDown = 0;
-			
-			Point pRight = {p.y,p.x+1};
-			gameWin.swapTiles(p, pRight);
-			for   (int y = 0; y < 4; ++y){
-				for (int x = 0; x < 4; ++x){
-				Point z = gameWin.findTile(CPTRN[x][y]);
-					if(Point(y,x) != gameWin.btns[z.y][z.x].location){
-						ManhattanSumRight += abs(y - z.y) + abs(x - z.x);
-					}
-				}
-			}
-			gameWin.swapTiles(pRight, p);
-			
-			Point pDown = {p.y+1,p.x};
-			gameWin.swapTiles(p, pDown);
-			for   (int y = 0; y < 4; ++y){
-				for (int x = 0; x < 4; ++x){
-					Point z = gameWin.findTile(CPTRN[x][y]);
-					if(Point(y,x) != gameWin.btns[z.y][z.x].location){
-						ManhattanSumDown += abs(y - z.y) + abs(x - z.x);
-					}
-				}
-			}
-			gameWin.swapTiles(pDown, p);
-			
-			if (ManhattanSumRight <= ManhattanSumDown){
-				return gameWin.btns[pRight.x][pRight.y].tileID;
-			}
-			else {
-				return gameWin.btns[pDown.x][pDown.y].tileID;
-			}
-		}
-		
-		//If the blank is in the top right corner;
-		if (p.x == 3 && p.y == 0){
-			
-			int ManhattanSumLeft = 0;
-			int ManhattanSumDown = 0;
-			
-			Point pDown = {p.y+1,p.x};
-			gameWin.swapTiles(p, pDown);
-			for   (int y = 0; y < 4; ++y){
-				for (int x = 0; x < 4; ++x){
-					Point z = gameWin.findTile(CPTRN[x][y]);
-					if(Point(y,x) != gameWin.btns[z.y][z.x].location){
-						ManhattanSumDown += abs(y - z.y) + abs(x - z.x);
-					}
-				}
-			}
-			gameWin.swapTiles(pDown, p);
-			
-			Point pLeft = {p.y,p.x-1};
-			gameWin.swapTiles(p, pLeft);
-			for   (int y = 0; y < 4; ++y){
-				for (int x = 0; x < 4; ++x){
-					Point z = gameWin.findTile(CPTRN[x][y]);
-					if(Point(y,x) != gameWin.btns[z.y][z.x].location){
-						ManhattanSumLeft += abs(y - z.y) + abs(x - z.x);
-					}
-				}
-			}
-			gameWin.swapTiles(pLeft, p);
-			
-			if (ManhattanSumDown <= ManhattanSumLeft){
-				return gameWin.btns[pDown.x][pDown.y].tileID;
-			}
-			else {
-				return gameWin.btns[pLeft.x][pLeft.y].tileID;
-			}
-		}
-		
-		//If the blank is in the bottom right corner;
-		if (p.x == 3 && p.y == 3){
-			
-			int ManhattanSumTop = 0;
-			int ManhattanSumLeft = 0;
-			
-			Point pLeft = {p.y,p.x-1};
-			gameWin.swapTiles(p, pLeft);
-			for   (int y = 0; y < 4; ++y){
-				for (int x = 0; x < 4; ++x){
-					Point z = gameWin.findTile(CPTRN[x][y]);
-					if(Point(y,x) != gameWin.btns[z.y][z.x].location){
-						ManhattanSumLeft += abs(y - z.y) + abs(x - z.x);
-					}
-				}
-			}
-			gameWin.swapTiles(pLeft, p);
-			
-			Point pTop = {p.y-1,p.x};
-			gameWin.swapTiles(p, pTop);
-			for   (int y = 0; y < 4; ++y){
-				for (int x = 0; x < 4; ++x){
-					Point z = gameWin.findTile(CPTRN[x][y]);
-					if(Point(y,x) != gameWin.btns[z.y][z.x].location){
-						ManhattanSumTop += (abs(y - z.y) + abs(x - z.x));
-					}
-				}
-			}
-			gameWin.swapTiles(pTop, p);
-			
-			if (ManhattanSumTop <= ManhattanSumLeft){
-				return gameWin.btns[pTop.x][pTop.y].tileID;
-			}
-			else {
-				return gameWin.btns[pLeft.x][pLeft.y].tileID;
-			}
-			
-		}
-		
-		//If the blank is in the bottom left;
-		if (p.x == 0 && p.y == 3){
-			
-			int ManhattanSumTop = 0;
-			int ManhattanSumRight = 0;
-			
-			Point pTop = {p.y-1,p.x};
-			gameWin.swapTiles(p, pTop);
-			for   (int y = 0; y < 4; ++y){
-				for (int x = 0; x < 4; ++x){
-					Point z = gameWin.findTile(CPTRN[x][y]);
-					if(Point(y,x) != gameWin.btns[z.y][z.x].location){
-						ManhattanSumTop += (abs(y - z.y) + abs(x - z.x));
-					}
-				}
-			}
-			gameWin.swapTiles(pTop, p);
-			
-			Point pRight = {p.y,p.x+1};
-			gameWin.swapTiles(p, pRight);
-			for   (int y = 0; y < 4; ++y){
-				for (int x = 0; x < 4; ++x){
-				Point z = gameWin.findTile(CPTRN[x][y]);
-					if(Point(y,x) != gameWin.btns[z.y][z.x].location){
-						ManhattanSumRight += abs(y - z.y) + abs(x - z.x);
-					}
-				}
-			}
-			gameWin.swapTiles(pRight, p);
-			
-			if (ManhattanSumTop <= ManhattanSumRight){
-				return gameWin.btns[pTop.x][pTop.y].tileID;
-			}
-			else {
-				return gameWin.btns[pRight.x][pRight.y].tileID;
-			}
-			
-		}
-		
-	}
-	
-	//The function returns the ID of the tile that is to be recommended.
-	
-}
-
-
-*/
-
-
 

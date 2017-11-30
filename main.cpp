@@ -19,7 +19,8 @@ int main(){
 	while(Fl::wait()){
 		if(gm.checkWinState()){
 			//Scoreboard stuff and game win state
-			cout << "Game Over" << endl;
+			//C++ 17 feature 'u8' gives the string "Game Over" values from UTF-8 
+			cout << u8"Game Over" << endl;
 			gm.showHighScores();
 			break;
 		}else gm.showHint();

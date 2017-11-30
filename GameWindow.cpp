@@ -71,7 +71,7 @@ void GameWindow::createButtons(vector<vector<int>> pattern){
 	//Creates buttons for the game board
 	for   (int y = 0; y < 4; ++y){
 		for (int x = 0; x < 4; ++x){
-			if(pattern[x][y] == 0)
+			if(pattern[y][x] == 0)
 				 btns[y].push_back(new Tile(Point(x*btnW, y*btnH+25), btnW, btnH, "", pattern[y][x], Point(x,y)));
 			else btns[y].push_back(new Tile(Point(x*btnW, y*btnH+25), btnW, btnH, to_string(pattern[y][x]), pattern[y][x], Point(x,y)));
 		}
