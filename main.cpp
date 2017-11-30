@@ -12,6 +12,13 @@ using namespace std;
 
 int main(){
 	SplashScreen splash(Point(0,0), "15Game");
+	//loop for the GIF like display
+	for (int i = 0; i < 11; ++i){
+		Image board_gif {Point{240,195},splash.filenames[i]};
+		splash.attach(board_gif);
+		splash.wait_for_button();
+	}
+	
 	splash.wait_for_button();
 	GameManager gm(DifficultyWindow::getDifficulty());
 	gm.checkWinState();
