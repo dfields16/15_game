@@ -8,9 +8,10 @@ void SplashScreen::cb_start(Address, Address pw)
 SplashScreen::SplashScreen(Point xy, const string& title)
 	:Window(xy,500,450,title),
 	game_title {Point{10,70},"Puzzle Game!"},
-	team_name {Point{130,170}, "Team 18"},
-	teammates {Point{20,270}, "Elijah, Bear, Dawson, Michael"},
-	start_button(Point(160,310),150,120, "Start", cb_start)
+	team_name {Point{130,120}, "Team 18"},
+	teammates {Point{20,160}, "Elijah, Bear, Dawson, Michael"},
+	start_button(Point(10,310),150,120, "Start", cb_start),
+	filenames {"board1.jpg","board2.jpg","board3.jpg","board4.jpg","board5.jpg","board6.jpg","board7.jpg","board8.jpg","board9.jpg","board10.jpg","board11.jpg"}
 {
 	game_title.set_color(Color::blue);
 	game_title.set_font_size(70);
