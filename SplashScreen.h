@@ -10,6 +10,7 @@ struct SplashScreen:Graph_lib::Window
 	Text game_title;
 	Text team_name;
 	Text teammates;
+	vector<string> filenames;
 private:
 	Button start_button;
 	void start();
