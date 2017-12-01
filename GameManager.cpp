@@ -193,15 +193,25 @@ string GameManager::loadHighScores(){
 			break;
 	}
 	//Load text
-	string fContent = "";
-	
-	return fContent;
+	ifstream ist {fileLoc};
+	if (!ist) error("can't open input file ", "data.txt");
+	string data = "";
+	string tScore,tInit = "";
+	if(ist.good())ist >> tScore >> tInit;
+	data += tScore + " " + tInit;
+	while(ist.good()){
+		ist >> tScore >> tInit;
+		data += "\n" + tScore + " " + tInit;
+	}
+	ist.close();
+	cout << data << endl;
+	return data;
 }
 
 void GameManager::saveHighScores(string score){
 	//add our current score to the string
 	string loadedScores = loadHighScores();
-	loadedScores += "\n" + score;
+	loadedScores = score + "\n" + loadedScores;
 	//split this into a vector based on '\n'
 	vector<string>scores;
 	string delimiter = "\n";
@@ -210,18 +220,20 @@ void GameManager::saveHighScores(string score){
 		scores.push_back(loadedScores.substr(0, pos));
 		loadedScores.erase(0, pos + delimiter.length());
 	}
-	scores.push_back(loadedScores);
 	//Sort vector
-	sort (scores.begin(), scores.begin()); 
-	string outStr = "";
-	for(int i = 0; i < scores.size(); ++i){
-		outStr += scores[scores.size()-i];
-	}
-	//Save score
-	saveTxt(outStr);
+	sort (scores.begin(), scores.end(), [](const string &lhs, const string &rhs){
+		stringstream ls, rs;
+		ls << lhs;
+		rs << rhs;
+		int l; ls >> l;
+		int r; rs >> r;
+		cout << "BS: " << l << " " << r << endl;
+		return l > r;
+	}); 
+	saveTxt(scores);
 }
 
-void GameManager::saveTxt(string txt){
+void GameManager::saveTxt(vector<string> out){
 	//Based on difficulty, save separte file
 	string fileLoc = "";
 	switch(difficulty){
@@ -239,15 +251,19 @@ void GameManager::saveTxt(string txt){
 			break;
 	}
 	//Save txt
-	
-	
+	ofstream ost {fileLoc};
+	if (!ost) error("can't open output file ", fileLoc);
+	for(int i = 0; i < out.size(); ++i){
+		ost << out[i] << endl;
+	}
+	ost.close();
 }
 
 void GameManager::showHighScores(){
 	if(gameWin.getInitialTxt() != "")saveHighScores(to_string(numCorrect*maxMoves) + " " + gameWin.getInitialTxt());
-	string loadedScores = loadHighScores();
 	//add our current score to the string on a new line
-	gameWin.setInstructionText(false, loadedScores);
+	gameWin.setInstructionText(false, "High Scores: \n" + loadHighScores());
+	gameWin.onGameOver();
 }
 
 void GameManager::showGameWindow(){
@@ -270,3 +286,10 @@ void GameManager::showHint(){
 	
 }
 
+bool GameManager::playAgain(){
+	if(gameWin.playAgain == shouldReset)return false;
+	shouldReset = gameWin.playAgain;
+	if(shouldReset)gameWin.hide();
+	return shouldReset;
+	
+}

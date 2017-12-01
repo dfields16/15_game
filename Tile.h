@@ -9,6 +9,7 @@ namespace Graph_lib{
 			int tileID;
 			Point location;
 			bool beenPressed = false;
+			bool enabled = true;
 			static void cb_OnClick(Address, Address);
 			void OnClick();
 			

@@ -7,7 +7,6 @@ struct SplashScreen:Graph_lib::Window
 {
 	SplashScreen(Point xy, const string& title);
 	bool wait_for_button();
-	int dont_wait_for_button();
 	Text game_title;
 	Text team_name;
 	Text teammates;
@@ -17,4 +16,6 @@ private:
 	void start();
 	static void cb_start(Address, Address window);
 	bool button_pushed;
+	Vector_ref<Image> gameImgs{};
+	static void loopImgs();
 };

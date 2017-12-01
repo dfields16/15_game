@@ -12,6 +12,7 @@ GameWindow::GameWindow(Point xy, int w, int h, const string& title)
    :Window{xy,w,h,title},
 	quitBtn(Point{btnW*4,y_max()-btnW}, x_max()-btnW*4, btnH, "Quit", cb_quit),
 	hintBtn(Point{0,y_max()-btnW}, btnW*4, btnH, "Hint", cb_hint),
+	replayBtn(Point{0,y_max()-btnW}, btnW*4, btnH, "Play Again?", cb_again),
 	scoreBox(Point{0,0}, btnW*4, 25, "Moves left: 99"),
 	initialBox(Point{btnW*4,0}, x_max()-btnW*4, 25, ""),
 	instrBox(Point{btnW*4,25}, x_max()-btnW*4, btnH*4, "")
@@ -51,6 +52,24 @@ void GameWindow::cb_hint(Address, Address pw){
 
 void GameWindow::hint(){
 	showHint = !showHint;
+}
+
+void GameWindow::cb_again(Address, Address pw){  
+   reference_to<GameWindow>(pw).again();
+}
+
+void GameWindow::again(){
+	playAgain = !playAgain;
+}
+
+void GameWindow::onGameOver(){
+	detach(hintBtn);
+	attach(replayBtn);
+	for   (int y = 0; y < 4; ++y){
+		for (int x = 0; x < 4; ++x){
+			btns[x][y].enabled = false;
+		}
+	}
 }
 
 vector<vector<int>> GameWindow::getCurrentPattern(){

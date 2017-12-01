@@ -21,9 +21,11 @@ private:
    static void cb_quit(Address, Address);
    void quit();
    //hint btn
-   Button hintBtn;
+   Button hintBtn,replayBtn;
    static void cb_hint(Address, Address);
    void hint();
+   static void cb_again(Address, Address);
+   void again();
    void updateTiles();
    void checkAdjacentTiles(int x, int y);
    void swapTiles(Point t1, Point t2);
@@ -40,8 +42,10 @@ public:
     Point findTile(Point loc);
 	Point findTile(int id);
 	bool showHint = false;
+	bool playAgain = false;
 	void setInstructionText(bool shouldReset, string txt = "");
 	int prevID = -1;
 	string getInitialTxt();
+	void onGameOver();
 };
 

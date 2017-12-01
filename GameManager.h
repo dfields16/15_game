@@ -32,7 +32,8 @@ private:
 	string loadHighScores();
 	int manhattanDistance(int id, vector<vector<int>> pattern);
 	Point findMatrixPos(int id, vector<vector<int>> pattern);
-	void saveTxt(string txt);
+	void saveTxt(vector<string> out);
+	bool shouldReset = false;
 public:
 	enum Difficulty{Beginner,Intermediate,Advanced,Expert};
 	Difficulty difficulty;
@@ -46,5 +47,6 @@ public:
 	void saveHighScores(string score);
 	void showHighScores();
 	void showHint();
-		
+	bool playAgain();
+	bool shouldShowHS = true;
 };
