@@ -39,6 +39,7 @@ void launchGame(){
 					gm.shouldShowHS = false;
 				}
 			}else{
+				//If the user presses 'Play Again' this relaunches the game
 				launchGame();
 				break;
 			} 

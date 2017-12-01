@@ -16,6 +16,7 @@ DifficultyWindow::DifficultyWindow(Point xy, int w, int h, const string& title)
     expertBtn  (Point{(x_max()-btnW)/2,4*(btnH+btnSpacing) }, btnW, btnH, "Expert", 		cb_expert),
 	quit_button(Point{0,y_max()-btnH}, x_max(), btnH, "Quit", cb_quit)
    {
+	//Attach objs
 	attach(header);
 	attach(beginnerBtn);
 	attach(intermedBtn);

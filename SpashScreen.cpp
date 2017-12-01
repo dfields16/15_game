@@ -15,12 +15,14 @@ SplashScreen::SplashScreen(Point xy, const string& title)
 	filenames {"board1.jpg","board2.jpg","board3.jpg","board4.jpg","board5.jpg","board6.jpg","board7.jpg","board8.jpg","board9.jpg","board10.jpg","board11.jpg"}
 	
 {
+	//Set fonts and color for text objs
 	game_title.set_color(Color::blue);
 	game_title.set_font_size(70);
 	team_name.set_color(Color::green);
 	team_name.set_font_size(50);
 	teammates.set_color(Color::red);
 	teammates.set_font_size(30);
+	//Attach Items
 	attach(game_title);
 	attach(team_name);
 	attach(teammates);
@@ -32,6 +34,7 @@ SplashScreen::SplashScreen(Point xy, const string& title)
 }
 
 bool SplashScreen::wait_for_button(){
+	//Waits for the user to press start
     show();
     button_pushed = false;
     while (!button_pushed)Fl::wait();

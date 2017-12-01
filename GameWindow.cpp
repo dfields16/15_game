@@ -17,6 +17,7 @@ GameWindow::GameWindow(Point xy, int w, int h, const string& title)
 	initialBox(Point{btnW*4,0}, x_max()-btnW*4, 25, ""),
 	instrBox(Point{btnW*4,25}, x_max()-btnW*4, btnH*4, "")
 	{
+	//attach objs
 	attach(quitBtn);
 	attach(hintBtn);
 	attach(scoreBox);
@@ -62,7 +63,9 @@ void GameWindow::again(){
 	playAgain = !playAgain;
 }
 
+
 void GameWindow::onGameOver(){
+	//disables tiles and attaches replayBtn
 	detach(hintBtn);
 	attach(replayBtn);
 	for   (int y = 0; y < 4; ++y){
@@ -183,6 +186,7 @@ void GameWindow::setInstructionText(bool shouldReset, string txt){
 }
 
 string GameWindow::getInitialTxt(){
+	//Returns initialBox input
 	return initialBox.get_string();
 }
 

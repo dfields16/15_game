@@ -9,6 +9,7 @@ GameManager::GameManager(Difficulty d):
 	gamePtrn(BPTRN[0]),
 	gameWin(Point(0,0), 425, 275, "15Game")
 	{
+		//Chooses a random pattern for the game
 		int patternID = rand() % 4;
 		switch(difficulty){
 			case Beginner:
@@ -30,6 +31,7 @@ GameManager::GameManager(Difficulty d):
 		}
 		maxMoves = movesLeft;
 		printMatrix(gamePtrn);
+		//Sets up the game board
 		gameWin.createButtons(gamePtrn);
 		gameWin.setScore(movesLeft, false);
 	}
@@ -287,6 +289,7 @@ void GameManager::showHint(){
 }
 
 bool GameManager::playAgain(){
+	//Returns true if 'Play again' is pressed and hasnt been pressed twice
 	if(gameWin.playAgain == shouldReset)return false;
 	shouldReset = gameWin.playAgain;
 	if(shouldReset)gameWin.hide();
