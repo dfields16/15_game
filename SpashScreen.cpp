@@ -1,5 +1,5 @@
 #include "SplashScreen.h"
-
+#include <ctime>
 void SplashScreen::cb_start(Address, Address pw)
 {
 	reference_to<SplashScreen>(pw).button_pushed = true;
@@ -30,5 +30,27 @@ bool SplashScreen::wait_for_button(){
     button_pushed = false;
     while (!button_pushed) Fl::wait();
 	hide();
+    return button_pushed;
+}
+
+int SplashScreen::dont_wait_for_button(){
+    time_t startTime = Time(NULL);
+	time_t endTime = startTime;
+	show();
+    button_pushed = false;
+    while(true){
+		cout << "test " << difftime(endTime,startTime)<< endl;
+	if(button_pushed)
+	{
+	hide();
+	return 12;
+	}
+	if(difftime(endTime,startTime)<-2){
+	hide();
+	return 1;
+	}
+	endTime = endTime + Time(NULL);
+	cout << endTime << endl;
+	}
     return button_pushed;
 }

@@ -7,16 +7,22 @@
 //#include "GameManager.h"
 #include "DifficultyWindow.h"
 
+
+
 using namespace Graph_lib;
 using namespace std;
-
 int main(){
 	SplashScreen splash(Point(0,0), "15Game");
 	//loop for the GIF like display
-	for (int i = 0; i < 11; ++i){
+	
+	int i = 0;	
+	while(i < 11){
+		
 		Image board_gif {Point{240,195},splash.filenames[i]};
 		splash.attach(board_gif);
-		splash.wait_for_button();
+		i = i + splash.dont_wait_for_button();
+		if(i == 11)
+			i = 0;
 	}
 	
 	splash.wait_for_button();
