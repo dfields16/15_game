@@ -1,3 +1,4 @@
+//SplashScreen.cpp
 #include "SplashScreen.h"
 #include <stdio.h>
 #include <time.h>

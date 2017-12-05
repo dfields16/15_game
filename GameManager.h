@@ -1,3 +1,4 @@
+//GameManager.h
 #include "GameWindow.h"
 
 struct GameManager{
